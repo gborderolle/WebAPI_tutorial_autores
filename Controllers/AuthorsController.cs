@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -49,6 +51,7 @@ namespace WebAPI_tutorial_recursos.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet] // url completa: https://localhost:7003/api/authors/
+        [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme)] 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AuthorDTO>))]
         public async Task<ActionResult<List<APIResponse>>> GetAuthors()
         {
@@ -93,7 +96,17 @@ namespace WebAPI_tutorial_recursos.Controllers
                     return BadRequest(_response);
                 }
 
-                var author = await _authorRepository.Get(v => v.Id == id);
+                var thenIncludeConfig = new ThenIncludePropertyConfiguration<Author>
+                {
+                    IncludeExpression = b => b.AuthorsBooks,
+                    ThenIncludeExpression = ab => ((AuthorBook)ab).Book
+                };
+
+                var author = await _authorRepository.Get(
+                    v => v.Id == id,
+                    thenIncludes: new[] { thenIncludeConfig }
+                );
+
                 if (author == null)
                 {
                     _logger.LogError($"El autor ID = {id} no existe.");
@@ -223,7 +236,8 @@ namespace WebAPI_tutorial_recursos.Controllers
                 _response.Result = _mapper.Map<AuthorDTO>(modelo); // Siempre retorna el DTO genérico: AuthorDTO
                 _response.StatusCode = HttpStatusCode.Created;
 
-                // Cuidado que exista un endpoint con la misma firma
+                // CreatedAtRoute -> Nombre de la ruta (del método): GetAuthorById
+                // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/13816172#notes
                 return CreatedAtRoute("GetAuthorById", new { id = modelo.Id }, _response); // objeto que devuelve (el que creó). 
             }
             catch (Exception ex)
@@ -273,6 +287,12 @@ namespace WebAPI_tutorial_recursos.Controllers
         }
 
         // Endpoint para actualizar una author por ID.
+        /// <summary>
+        /// Clase PUT: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/13816178#notes
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updatedAuthorDto"></param>
+        /// <returns></returns>
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -305,6 +325,12 @@ namespace WebAPI_tutorial_recursos.Controllers
         }
 
         // Endpoint para hacer una actualización parcial de una author por ID.
+        /// <summary>
+        /// Clase PATCH: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/26946940#notes
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="patchDto"></param>
+        /// <returns></returns>
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

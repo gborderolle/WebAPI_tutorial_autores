@@ -12,8 +12,8 @@ using WebAPI_tutorial_recursos.Context;
 namespace WebAPI_tutorial_recursos.Migrations
 {
     [DbContext(typeof(ContextDB))]
-    [Migration("20230820015401_authorsbooks")]
-    partial class authorsbooks
+    [Migration("20230820024249_migracion")]
+    partial class migracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,16 +52,37 @@ namespace WebAPI_tutorial_recursos.Migrations
                         new
                         {
                             Id = 1,
-                            Creation = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Creation = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(63),
                             Name = "Gonzalo",
-                            Update = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Update = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(74)
                         },
                         new
                         {
                             Id = 2,
-                            Creation = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Miranda",
-                            Update = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Creation = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(77),
+                            Name = "Ramiro",
+                            Update = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(77)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Creation = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(78),
+                            Name = "Daniel",
+                            Update = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(79)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Creation = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(80),
+                            Name = "Gastón",
+                            Update = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(80)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Creation = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(81),
+                            Name = "Martín",
+                            Update = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(82)
                         });
                 });
 
@@ -91,14 +112,36 @@ namespace WebAPI_tutorial_recursos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("Creation")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTime>("Update")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Book");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Creation = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(200),
+                            Title = "El libro de la selva",
+                            Update = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(201)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Creation = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(202),
+                            Title = "La vida de Steve Jobs",
+                            Update = new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(203)
+                        });
                 });
 
             modelBuilder.Entity("WebAPI_tutorial_recursos.Models.Review", b =>

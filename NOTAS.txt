@@ -1,0 +1,25 @@
+﻿
+--
+
+DEPLOY:
+Para mandar a producción definitivamente, en propiedades del proyecto, cambiar la variable de entorno: ASPNETCORE_ENVIRONMENT de Development a Production.
+
+ConnectionString no debería ir en AppSettings.json (mala práctica), sino en Variables de ambiente.
+
+Proveedores de configuración:
+- AppSetings.json
+- Variables de ambiente
+
+--
+
+Lista de respuestas HTTP:
+
+---- Los 200:
+---- Los 300:
+---- Los 400:
+
+401: Falta autorización para consumir el endpoint
+404: Recurso no encontrado
+
+
+---- Los 500: errores del servidor

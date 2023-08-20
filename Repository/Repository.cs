@@ -23,14 +23,23 @@ namespace WebAPI_tutorial_recursos.Repository
             await Save();
         }
 
-        public async Task<T> Get(Expression<Func<T, bool>>? filter = null, bool tracked = true, params Expression<Func<T, object>>[] includes)
+        public async Task<T> Get(Expression<Func<T, bool>>? filter = null, bool tracked = true, IEnumerable<IncludePropertyConfiguration<T>> includes = null, IEnumerable<ThenIncludePropertyConfiguration<T>> thenIncludes = null)
         {
             IQueryable<T> query = dbSet;
-
-            // Agregar las propiedades a incluir al query.
-            foreach (var includeProperty in includes)
+            if (includes != null)
             {
-                query = query.Include(includeProperty);
+                foreach (var includeConfig in includes)
+                {
+                    query = query.Include(includeConfig.IncludeExpression);
+                }
+            }
+
+            if (thenIncludes != null)
+            {
+                foreach (var thenIncludeConfig in thenIncludes)
+                {
+                    query = query.Include(thenIncludeConfig.IncludeExpression).ThenInclude(thenIncludeConfig.ThenIncludeExpression);
+                }
             }
 
             if (!tracked)
@@ -44,12 +53,15 @@ namespace WebAPI_tutorial_recursos.Repository
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<T>> GetAll(Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[] includeProperties)
+        public async Task<List<T>> GetAll(Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = dbSet;
-            foreach (var includeProperty in includeProperties)
+            if (includes != null)
             {
-                query = query.Include(includeProperty);
+                foreach (var includeProperty in includes)
+                {
+                    query = query.Include(includeProperty);
+                }
             }
             if (filter != null)
             {
@@ -58,10 +70,10 @@ namespace WebAPI_tutorial_recursos.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<List<T>> GetAllIncluding(Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[] includeProperties)
+        public async Task<List<T>> GetAllIncluding(Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = dbSet;
-            foreach (var includeProperty in includeProperties)
+            foreach (var includeProperty in includes)
             {
                 query = query.Include(includeProperty);
             }
@@ -84,4 +96,16 @@ namespace WebAPI_tutorial_recursos.Repository
         }
 
     }
+}
+
+public class IncludePropertyConfiguration<T>
+{
+    public Expression<Func<T, object>> IncludeExpression { get; set; }
+    public Expression<Func<object, object>> ThenIncludeExpression { get; set; }
+}
+
+public class ThenIncludePropertyConfiguration<T>
+{
+    public Expression<Func<T, object>> IncludeExpression { get; set; }
+    public Expression<Func<object, object>> ThenIncludeExpression { get; set; }
 }

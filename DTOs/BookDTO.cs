@@ -14,8 +14,9 @@ namespace WebAPI_tutorial_recursos.DTOs
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [StringLength(maximumLength: 100, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
         public string Title { get; set; }
+        public List<AuthorDTO> AuthorList { get; set; } // 0..n (0=no existe Review sin Book)
 
-        public List<ReviewDTO> Reviews { get; set; } // 0..n (0=no existe Review sin Book)
+        public List<ReviewDTO> ReviewList { get; set; } // 0..n (0=no existe Review sin Book)
 
     }
 }

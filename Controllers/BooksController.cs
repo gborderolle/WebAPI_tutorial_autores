@@ -72,8 +72,22 @@ namespace WebAPI_tutorial_recursos.Controllers
                     return BadRequest(_response);
                 }
 
-                var book = await _bookRepository.Get(v => v.Id == id, includes: b => b.Reviews); // incluye los autores del libro
-                //var book = await _bookRepository.Get(v => v.Id == id); // incluye los autores del libro
+                var includeConfigs = new List<IncludePropertyConfiguration<Book>>{
+                    new IncludePropertyConfiguration<Book> { IncludeExpression = b => b.ReviewList }
+                };
+
+                var thenIncludeConfig = new ThenIncludePropertyConfiguration<Book>
+                {
+                    IncludeExpression = b => b.AuthorBookList,
+                    ThenIncludeExpression = ab => ((AuthorBook)ab).Author
+                };
+
+                var book = await _bookRepository.Get(
+                    v => v.Id == id,
+                    includes: includeConfigs,
+                    thenIncludes: new[] { thenIncludeConfig }
+                );
+
                 if (book == null)
                 {
                     _logger.LogError($"El libro ID = {id} no existe.");
@@ -135,6 +149,9 @@ namespace WebAPI_tutorial_recursos.Controllers
                 _response.Result = _mapper.Map<BookDTO>(modelo);
                 _response.StatusCode = HttpStatusCode.Created;
 
+
+                // CreatedAtRoute -> Nombre de la ruta (del método): GetBook
+                // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/13816172#notes
                 return CreatedAtRoute("GetBook", new { id = modelo.Id }, _response); // objeto que devuelve (el que creó)
             }
             catch (Exception ex)

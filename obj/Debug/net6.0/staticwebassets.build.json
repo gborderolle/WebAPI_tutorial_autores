@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "E25HElxMz/2xfaqp77n0xKXFO6K34nu5395LFbIFI/0=",
+  "Hash": "AuSeUJguxare+msQt/Py+0fYsNj0MBZ4BZlT81hYROE=",
   "Source": "WebAPI_tutorial_recursos",
   "BasePath": "_content/WebAPI_tutorial_recursos",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "WebAPI_tutorial_recursos\\wwwroot",
       "Source": "WebAPI_tutorial_recursos",
-      "ContentRoot": "D:\\Documents\\GitHub\\WebAPI_tutorial_recursos\\WebAPI_tutorial_recursos\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_recursos\\wwwroot\\",
       "BasePath": "_content/WebAPI_tutorial_recursos",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "D:\\Documents\\GitHub\\WebAPI_tutorial_recursos\\WebAPI_tutorial_recursos\\wwwroot\\Archivo 1.txt",
+      "Identity": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_recursos\\wwwroot\\Archivo 1.txt",
       "SourceId": "WebAPI_tutorial_recursos",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Documents\\GitHub\\WebAPI_tutorial_recursos\\WebAPI_tutorial_recursos\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_recursos\\wwwroot\\",
       "BasePath": "_content/WebAPI_tutorial_recursos",
       "RelativePath": "Archivo 1.txt",
       "AssetKind": "All",

@@ -14,9 +14,9 @@ namespace WebAPI_tutorial_recursos.Models
         [StringLength(maximumLength: 100, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
         public string Name { get; set; }
 
-        public DateTime Creation { get; set; }
+        public DateTime Creation { get; set; } = DateTime.Now;
 
-        public DateTime Update { get; set; }
+        public DateTime Update { get; set; } = DateTime.Now;
 
         public List<AuthorBook> AuthorsBooks { get; set; } // n..n
 

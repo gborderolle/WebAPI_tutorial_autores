@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
-using Azure;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
-using WebAPI_tutorial_recursos.Context;
 using WebAPI_tutorial_recursos.DTOs;
 using WebAPI_tutorial_recursos.Models;
-using WebAPI_tutorial_recursos.Repository;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
 
 namespace WebAPI_tutorial_recursos.Controllers
@@ -118,7 +113,7 @@ namespace WebAPI_tutorial_recursos.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReviewDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        public async Task<ActionResult<APIResponse>> CreateReview(int bookId, [FromBody] ReviewCreateDTO reviewCreateDTO)
+        public async Task<ActionResult<APIResponse>> CreateReview(int bookId, ReviewCreateDTO reviewCreateDTO)
         {
             try
             {
@@ -155,7 +150,7 @@ namespace WebAPI_tutorial_recursos.Controllers
                 _response.StatusCode = HttpStatusCode.Created;
 
                 // Cuidado que exista un endpoint con la misma firma
-                return CreatedAtRoute("GetReviewById", new { id = modelo.Id }, _response); // objeto que devuelve (el que creó). 
+                return CreatedAtRoute("GetReviewById", new { id = modelo.Id, bookId = bookId }, _response); // objeto que devuelve (el que creó). 
             }
             catch (Exception ex)
             {
