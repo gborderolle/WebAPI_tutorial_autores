@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -11,6 +12,8 @@ using WebAPI_tutorial_recursos.Filters;
 using WebAPI_tutorial_recursos.Middlewares;
 using WebAPI_tutorial_recursos.Repository;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
+using WebAPI_tutorial_recursos.Services;
+using WebAPI_tutorial_recursos.Utilities.HATEOAS;
 
 namespace WebAPI_tutorial_recursos
 {
@@ -40,6 +43,9 @@ namespace WebAPI_tutorial_recursos
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI_tutorial_recursos", Version = "v1" });
+                c.OperationFilter<AddParamHATEOAS>();
+
                 c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -123,6 +129,11 @@ namespace WebAPI_tutorial_recursos
                     builder.WithOrigins("https://apirequest.io").AllowAnyMethod().AllowAnyHeader();
                 });
             });
+
+            // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148834#notes
+            services.AddTransient<GenerateLinks>();
+            services.AddTransient<HATEOASAuthorFilterAttribute>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
         }
 

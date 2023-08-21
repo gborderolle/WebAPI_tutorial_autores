@@ -31,9 +31,11 @@ namespace WebAPI_tutorial_recursos.Controllers
             _authorRepository = authorRepository;
         }
 
-        [HttpGet]
+        #region Endpoints
+
+        [HttpGet(Name = "GetBooks")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<BookDTO>))]
-        public async Task<ActionResult<List<APIResponse>>> GetBooks()
+        public async Task<ActionResult<List<APIResponse>>> Get()
         {
             try
             {
@@ -66,7 +68,7 @@ namespace WebAPI_tutorial_recursos.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTOWithAuthors))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetBook(int id)
+        public async Task<ActionResult<APIResponse>> Get(int id)
         {
             try
             {
@@ -120,9 +122,9 @@ namespace WebAPI_tutorial_recursos.Controllers
             return _response;
         }
 
-        [HttpPost]
+        [HttpPost(Name = "CreateBook")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        public async Task<ActionResult<APIResponse>> CreateBook([FromBody] BookCreateDTO bookCreateDTO)
+        public async Task<ActionResult<APIResponse>> Post([FromBody] BookCreateDTO bookCreateDTO)
         {
             try
             {
@@ -179,9 +181,9 @@ namespace WebAPI_tutorial_recursos.Controllers
             return _response;
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:int}", Name = "DeleteBook")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
-        public async Task<ActionResult<APIResponse>> DeleteBook(int id)
+        public async Task<ActionResult<APIResponse>> Delete(int id)
         {
             try
             {
@@ -220,10 +222,10 @@ namespace WebAPI_tutorial_recursos.Controllers
         }
 
         // Endpoint para actualizar una libro por ID.
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}", Name = "UpdateBook")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateBook(int id, BookCreateDTO bookCreateDTO)
+        public async Task<ActionResult<APIResponse>> Put(int id, BookCreateDTO bookCreateDTO)
         {
             try
             {
@@ -279,12 +281,12 @@ namespace WebAPI_tutorial_recursos.Controllers
         }
 
         // Endpoint para hacer una actualización parcial de una libro por ID.
-        [HttpPatch("{id:int}")]
+        [HttpPatch("{id:int}", Name = "UpdatePartialBookById")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        public async Task<ActionResult<APIResponse>> UpdatePartialBook(int id, JsonPatchDocument<BookCreateDTO> patchDTO)
+        public async Task<ActionResult<APIResponse>> Patch(int id, JsonPatchDocument<BookCreateDTO> patchDTO)
         {
             try
             {
@@ -343,6 +345,10 @@ namespace WebAPI_tutorial_recursos.Controllers
             return Ok(_response);
         }
 
+        #endregion
+
+        #region Private methods
+
         private Book SetAuthorsOrder(Book model)
         {
             if (model.AuthorBookList != null)
@@ -354,6 +360,8 @@ namespace WebAPI_tutorial_recursos.Controllers
             }
             return model;
         }
+
+        #endregion
 
     }
 }

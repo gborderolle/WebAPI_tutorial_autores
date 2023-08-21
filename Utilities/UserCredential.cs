@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebAPI_tutorial_recursos.DTOs
+namespace WebAPI_tutorial_recursos.Utilities
 {
     public class UserCredential
     {

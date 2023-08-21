@@ -17,7 +17,6 @@ namespace WebAPI_tutorial_recursos.Utilities
 
             // -------
 
-
             CreateMap<BookCreateDTO, Book>()
                 .ForMember(v => v.AuthorBookList, options => options.MapFrom(MapAuthorsBooks)); // ok
 
@@ -26,9 +25,7 @@ namespace WebAPI_tutorial_recursos.Utilities
             CreateMap<Book, BookDTOWithAuthors>()
                 .ForMember(v => v.AuthorList, options => options.MapFrom(MapBookDTOAuthors)); // ok
 
-
             // -------
-
 
             CreateMap<ReviewCreateDTO, Review>(); // ok
             CreateMap<Review, ReviewDTO>(); // ok

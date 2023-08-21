@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using WebAPI_tutorial_recursos.Models;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WebAPI_tutorial_recursos.DTOs
 {

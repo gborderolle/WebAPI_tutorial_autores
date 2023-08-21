@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks.Dataflow;
 using WebAPI_tutorial_recursos.DTOs;
 using WebAPI_tutorial_recursos.Models;
+using WebAPI_tutorial_recursos.Utilities;
 
 namespace WebAPI_tutorial_recursos.Controllers
 {
@@ -33,7 +34,9 @@ namespace WebAPI_tutorial_recursos.Controllers
             _response = new();
         }
 
-        [HttpPost("register")] //api/accounts/register
+        #region Endpoints
+
+        [HttpPost("register", Name = "Register")] //api/accounts/register
         public async Task<ActionResult<APIResponse>> Register(UserCredential userCredential)
         {
             try
@@ -64,7 +67,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             return Ok(_response);
         }
 
-        [HttpPost("login")]
+        [HttpPost("login",Name = "Login")]
         public async Task<ActionResult<APIResponse>> Login(UserCredential userCredential)
         {
             try
@@ -100,7 +103,7 @@ namespace WebAPI_tutorial_recursos.Controllers
         /// Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27047668#notes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("RenewToken")]
+        [HttpGet("RenewToken", Name = "RenewToken")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<APIResponse>> RenewToken()
         {
@@ -123,6 +126,50 @@ namespace WebAPI_tutorial_recursos.Controllers
             }
             return Ok(_response);
         }
+
+        [HttpPost("MakeAdmin", Name = "MakeAdmin")]
+        public async Task<ActionResult<APIResponse>> MakeAdmin(EditAdminDTO editAdminDTO)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(editAdminDTO.Email);
+                await _userManager.AddClaimAsync(user, new Claim("IsAdmin", "1"));
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.Result = NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
+                _response.ErrorMessages = new List<string> { ex.ToString() };
+            }
+            return Ok(_response);
+        }
+
+        [HttpPost("DeleteAdmin", Name = "DeleteAdmin")]
+        public async Task<ActionResult<APIResponse>> DeleteAdmin(EditAdminDTO editAdminDTO)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(editAdminDTO.Email);
+                await _userManager.RemoveClaimAsync(user, new Claim("IsAdmin", "1"));
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.Result = NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
+                _response.ErrorMessages = new List<string> { ex.ToString() };
+            }
+            return Ok(_response);
+        }
+
+        #endregion
+
+        #region Private methods
 
         private async Task<AuthenticationResponse> TokenSetup(UserCredential userCredential) // APIResponse sólo va cuando es un método http expuesto (no un método local)
         {
@@ -151,45 +198,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             };
         }
 
-        [HttpPost("MakeAdmin")]
-        public async Task<ActionResult<APIResponse>> MakeAdmin(EditAdminDTO editAdminDTO)
-        {
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(editAdminDTO.Email);
-                await _userManager.AddClaimAsync(user, new Claim("IsAdmin", "1"));
-                _response.StatusCode = HttpStatusCode.OK;
-                _response.Result = NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.ToString());
-                _response.IsSuccess = false;
-                _response.StatusCode = HttpStatusCode.InternalServerError;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
-            }
-            return Ok(_response);
-        }
-
-        [HttpPost("DeleteAdmin")]
-        public async Task<ActionResult<APIResponse>> DeleteAdmin(EditAdminDTO editAdminDTO)
-        {
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(editAdminDTO.Email);
-                await _userManager.RemoveClaimAsync(user, new Claim("IsAdmin", "1"));
-                _response.StatusCode = HttpStatusCode.OK;
-                _response.Result = NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.ToString());
-                _response.IsSuccess = false;
-                _response.StatusCode = HttpStatusCode.InternalServerError;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
-            }
-            return Ok(_response);
-        }
+        #endregion
 
     }
 }

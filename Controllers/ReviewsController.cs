@@ -37,9 +37,11 @@ namespace WebAPI_tutorial_recursos.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet] // url completa: https://localhost:7003/api/books/{bookId}/reviews/
+        #region Endpoints
+
+        [HttpGet(Name = "GetReviews")] // url completa: https://localhost:7003/api/books/{bookId}/reviews/
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ReviewDTO>))]
-        public async Task<ActionResult<List<APIResponse>>> GetReviews(int bookId)
+        public async Task<ActionResult<List<APIResponse>>> Get(int bookId)
         {
             try
             {
@@ -86,7 +88,7 @@ namespace WebAPI_tutorial_recursos.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReviewDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetReview(int bookId, int id)
+        public async Task<ActionResult<APIResponse>> Get(int bookId, int id)
         {
             try
             {
@@ -133,9 +135,9 @@ namespace WebAPI_tutorial_recursos.Controllers
             return _response;
         }
 
-        [HttpPost]
+        [HttpPost(Name = "CreateReview")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReviewDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        public async Task<ActionResult<APIResponse>> CreateReview(int bookId, ReviewCreateDTO reviewCreateDTO)
+        public async Task<ActionResult<APIResponse>> Post(int bookId, ReviewCreateDTO reviewCreateDTO)
         {
             try
             {
@@ -194,13 +196,13 @@ namespace WebAPI_tutorial_recursos.Controllers
             return _response;
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:int}", Name = "DeleteReview")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
-        public async Task<ActionResult<APIResponse>> DeleteReview(int bookId, int id)
+        public async Task<ActionResult<APIResponse>> Delete(int bookId, int id)
         {
             try
             {
-                if (bookId<= 0 || id <= 0)
+                if (bookId <= 0 || id <= 0)
                 {
                     _logger.LogError($"Datos de entrada no válidos.");
                     _response.ErrorMessages = new List<string> { $"Datos de entrada no válidos." };
@@ -245,10 +247,10 @@ namespace WebAPI_tutorial_recursos.Controllers
         }
 
         // Endpoint para actualizar una libro por ID.
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}", Name = "UpdateReview")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReviewDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateReview(int bookId, int id, ReviewCreateDTO reviewCreateDTO)
+        public async Task<ActionResult<APIResponse>> Put(int bookId, int id, ReviewCreateDTO reviewCreateDTO)
         {
             try
             {
@@ -305,12 +307,12 @@ namespace WebAPI_tutorial_recursos.Controllers
             return BadRequest(_response);
         }
 
-        [HttpPatch("{id:int}")]
+        [HttpPatch("{id:int}", Name = "UpdatePartialBook")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReviewDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        public async Task<ActionResult<APIResponse>> UpdatePartialBook(int bookId, int id, JsonPatchDocument<ReviewCreateDTO> patchDto)
+        public async Task<ActionResult<APIResponse>> Patch(int bookId, int id, JsonPatchDocument<ReviewCreateDTO> patchDto)
         {
             try
             {
@@ -377,6 +379,12 @@ namespace WebAPI_tutorial_recursos.Controllers
             }
             return Ok(_response);
         }
+
+        #endregion
+
+        #region Private methods
+
+        #endregion
 
     }
 }
