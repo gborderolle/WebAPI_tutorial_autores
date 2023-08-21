@@ -13,6 +13,7 @@ using WebAPI_tutorial_recursos.Middlewares;
 using WebAPI_tutorial_recursos.Repository;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
 using WebAPI_tutorial_recursos.Services;
+using WebAPI_tutorial_recursos.Utilities;
 using WebAPI_tutorial_recursos.Utilities.HATEOAS;
 
 namespace WebAPI_tutorial_recursos
@@ -38,12 +39,14 @@ namespace WebAPI_tutorial_recursos
             {
                 // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/13816116#notes
                 options.Filters.Add(typeof(ExceptionFilter));
+                options.Conventions.Add(new SwaggerGroupByVersion());
             }
             ).AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); // para arreglar errores de loop de relaciones 1..n y viceversa
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI_tutorial_recursos", Version = "v1" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "WebAPI_tutorial_recursos", Version = "v2" });
                 c.OperationFilter<AddParamHATEOAS>();
 
                 c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -151,7 +154,10 @@ namespace WebAPI_tutorial_recursos
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c => { 
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI_tutorial_recursos v1");
+                    c.SwaggerEndpoint("/swagger/v2/swagger.json", "WebAPI_tutorial_recursos v2");
+                });
             }
 
             app.UseHttpsRedirection();

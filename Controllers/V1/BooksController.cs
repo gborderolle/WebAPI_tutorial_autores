@@ -6,13 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebAPI_tutorial_recursos.DTOs;
 using WebAPI_tutorial_recursos.Models;
-using WebAPI_tutorial_recursos.Repository;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
 
-namespace WebAPI_tutorial_recursos.Controllers
+namespace WebAPI_tutorial_recursos.Controllers.V1
 {
     [ApiController]
-    [Route("api/books")]
+    [Route("api/v1/books")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public class BooksController : ControllerBase
     {
@@ -33,7 +32,7 @@ namespace WebAPI_tutorial_recursos.Controllers
 
         #region Endpoints
 
-        [HttpGet(Name = "GetBooks")]
+        [HttpGet(Name = "GetBooksv1")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<BookDTO>))]
         public async Task<ActionResult<List<APIResponse>>> Get()
         {
@@ -64,7 +63,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             return Ok(_response);
         }
 
-        [HttpGet("{id:int}", Name = "GetBook")]
+        [HttpGet("{id:int}", Name = "GetBookv1")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTOWithAuthors))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -122,7 +121,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             return _response;
         }
 
-        [HttpPost(Name = "CreateBook")]
+        [HttpPost(Name = "CreateBookv1")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         public async Task<ActionResult<APIResponse>> Post([FromBody] BookCreateDTO bookCreateDTO)
         {
@@ -169,7 +168,7 @@ namespace WebAPI_tutorial_recursos.Controllers
 
                 // CreatedAtRoute -> Nombre de la ruta (del método): GetBook
                 // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/13816172#notes
-                return CreatedAtRoute("GetBook", new { id = model.Id }, _response); // objeto que devuelve (el que creó)
+                return CreatedAtRoute("GetBookv1", new { id = model.Id }, _response); // objeto que devuelve (el que creó)
             }
             catch (Exception ex)
             {
@@ -181,7 +180,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             return _response;
         }
 
-        [HttpDelete("{id:int}", Name = "DeleteBook")]
+        [HttpDelete("{id:int}", Name = "DeleteBookv1")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         public async Task<ActionResult<APIResponse>> Delete(int id)
         {
@@ -222,7 +221,7 @@ namespace WebAPI_tutorial_recursos.Controllers
         }
 
         // Endpoint para actualizar una libro por ID.
-        [HttpPut("{id:int}", Name = "UpdateBook")]
+        [HttpPut("{id:int}", Name = "UpdateBookv1")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> Put(int id, BookCreateDTO bookCreateDTO)
@@ -281,7 +280,7 @@ namespace WebAPI_tutorial_recursos.Controllers
         }
 
         // Endpoint para hacer una actualización parcial de una libro por ID.
-        [HttpPatch("{id:int}", Name = "UpdatePartialBookById")]
+        [HttpPatch("{id:int}", Name = "UpdatePartialBookByIdv1")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

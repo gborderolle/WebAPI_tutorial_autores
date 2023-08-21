@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI_tutorial_recursos.Utilities.HATEOAS;
 
-namespace WebAPI_tutorial_recursos.Controllers
+namespace WebAPI_tutorial_recursos.Controllers.V1
 {
     [ApiController]
-    [Route("api")]
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/v1")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RootController : ControllerBase
     {
         private readonly IAuthorizationService _authorizationService;
@@ -19,19 +19,19 @@ namespace WebAPI_tutorial_recursos.Controllers
 
         #region Endpoints
 
-        [HttpGet(Name = "GetRoot")]
+        [HttpGet(Name = "GetRootv1")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<DataHATEOAS>>> Get()
         {
             var isAdmin = await _authorizationService.AuthorizeAsync(User, "IsAdmin");
             var dataHateoas = new List<DataHATEOAS>();
-            dataHateoas.Add(new DataHATEOAS(link: Url.Link("GetRoot", new { }), description: "self", method: "GET"));
-            dataHateoas.Add(new DataHATEOAS(link: Url.Link("GetAuthors", new { }), description: "Autores", method: "GET"));
+            dataHateoas.Add(new DataHATEOAS(link: Url.Link("GetRootv1", new { }), description: "self", method: "GET"));
+            dataHateoas.Add(new DataHATEOAS(link: Url.Link("GetAuthorsv1", new { }), description: "Autores", method: "GET"));
 
             if (isAdmin.Succeeded)
             {
-                dataHateoas.Add(new DataHATEOAS(link: Url.Link("CreateAuthor", new { }), description: "Crear autor", method: "POST"));
-                dataHateoas.Add(new DataHATEOAS(link: Url.Link("CreateBook", new { }), description: "Crear libro", method: "POST"));
+                dataHateoas.Add(new DataHATEOAS(link: Url.Link("CreateAuthorv1", new { }), description: "Crear autor", method: "POST"));
+                dataHateoas.Add(new DataHATEOAS(link: Url.Link("CreateBookv1", new { }), description: "Crear libro", method: "POST"));
             }
             return dataHateoas;
         }

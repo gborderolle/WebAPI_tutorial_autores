@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks.Dataflow;
 using WebAPI_tutorial_recursos.DTOs;
 using WebAPI_tutorial_recursos.Models;
 using WebAPI_tutorial_recursos.Utilities;
 
-namespace WebAPI_tutorial_recursos.Controllers
+namespace WebAPI_tutorial_recursos.Controllers.V1
 {
     [ApiController]
-    [Route("api/accounts")]
+    [Route("api/v1/accounts")]
     public class AccountsController : ControllerBase
     {
         private readonly IConfiguration _configuration;
@@ -36,7 +34,7 @@ namespace WebAPI_tutorial_recursos.Controllers
 
         #region Endpoints
 
-        [HttpPost("register", Name = "Register")] //api/accounts/register
+        [HttpPost("register", Name = "Registerv1")] //api/accounts/register
         public async Task<ActionResult<APIResponse>> Register(UserCredential userCredential)
         {
             try
@@ -67,7 +65,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             return Ok(_response);
         }
 
-        [HttpPost("login",Name = "Login")]
+        [HttpPost("login", Name = "Loginv1")]
         public async Task<ActionResult<APIResponse>> Login(UserCredential userCredential)
         {
             try
@@ -103,7 +101,7 @@ namespace WebAPI_tutorial_recursos.Controllers
         /// Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27047668#notes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("RenewToken", Name = "RenewToken")]
+        [HttpGet("RenewToken", Name = "RenewTokenv1")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<APIResponse>> RenewToken()
         {
@@ -127,7 +125,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             return Ok(_response);
         }
 
-        [HttpPost("MakeAdmin", Name = "MakeAdmin")]
+        [HttpPost("MakeAdmin", Name = "MakeAdminv1")]
         public async Task<ActionResult<APIResponse>> MakeAdmin(EditAdminDTO editAdminDTO)
         {
             try
@@ -147,7 +145,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             return Ok(_response);
         }
 
-        [HttpPost("DeleteAdmin", Name = "DeleteAdmin")]
+        [HttpPost("DeleteAdmin", Name = "DeleteAdminv1")]
         public async Task<ActionResult<APIResponse>> DeleteAdmin(EditAdminDTO editAdminDTO)
         {
             try
