@@ -12,6 +12,7 @@ namespace WebAPI_tutorial_recursos.Controllers
 {
     [ApiController]
     [Route("api/authors")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public class AuthorsController : ControllerBase
     {
         private readonly ILogger<AuthorsController> _logger; // Logger para registrar eventos.
@@ -51,8 +52,8 @@ namespace WebAPI_tutorial_recursos.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet] // url completa: https://localhost:7003/api/authors/
-        [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme)] 
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AuthorDTO>))]
+        [AllowAnonymous] // Permitido sin login
         public async Task<ActionResult<List<APIResponse>>> GetAuthors()
         {
             try
@@ -62,6 +63,7 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (authorList.Count == 0)
                 {
                     _logger.LogError($"No hay autores.");
+                    _response.ErrorMessages = new List<string> { $"No hay autores." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NoContent;
                     return NotFound(_response);
@@ -75,13 +77,14 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return Ok(_response);
         }
 
         [HttpGet("{id:int}", Name = "GetAuthorById")] // url completa: https://localhost:7003/api/authors/1
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorDTOWithBooks))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<APIResponse>> GetAuthor(int id)
@@ -91,6 +94,7 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (id <= 0)
                 {
                     _logger.LogError($"Error al obtener el autor ID = {id}");
+                    _response.ErrorMessages = new List<string> { $"Error al obtener el autor ID = {id}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
@@ -109,13 +113,14 @@ namespace WebAPI_tutorial_recursos.Controllers
 
                 if (author == null)
                 {
-                    _logger.LogError($"El autor ID = {id} no existe.");
+                    _logger.LogError($"Autor no encontrado ID = {id}.");
+                    _response.ErrorMessages = new List<string> { $"Autor no encontrado ID = {id}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
 
-                _response.Result = _mapper.Map<AuthorDTO>(author);
+                _response.Result = _mapper.Map<AuthorDTOWithBooks>(author);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -123,6 +128,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return _response;
@@ -139,6 +145,7 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (string.IsNullOrWhiteSpace(name))
                 {
                     _logger.LogError($"Error al obtener el autor nombre = {name}");
+                    _response.ErrorMessages = new List<string> { $"Error al obtener el autor nombre = {name}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
@@ -147,7 +154,8 @@ namespace WebAPI_tutorial_recursos.Controllers
                 var author = await _authorRepository.Get(v => v.Name.ToLower().Contains(name.ToLower()));
                 if (author == null)
                 {
-                    _logger.LogError($"El autor nombre = {name} no existe.");
+                    _logger.LogError($"Autor no encontrado Nombre = {name}.");
+                    _response.ErrorMessages = new List<string> { $"Autor no encontrado Nombre = {name}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
@@ -161,6 +169,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return _response;
@@ -177,6 +186,7 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (string.IsNullOrWhiteSpace(name))
                 {
                     _logger.LogError($"Error al obtener autores con nombre = {name}");
+                    _response.ErrorMessages = new List<string> { $"Error al obtener autores con nombre = {name}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
@@ -185,7 +195,8 @@ namespace WebAPI_tutorial_recursos.Controllers
                 var authorList = await _authorRepository.GetAll(v => v.Name.ToLower().Contains(name.ToLower()));
                 if (authorList == null || authorList.Count == 0)
                 {
-                    _logger.LogError($"No hay autores con nombre = {name}.");
+                    _logger.LogError($"Autor no encontrado Nombre = {name}.");
+                    _response.ErrorMessages = new List<string> { $"Autor no encontrado Nombre = {name}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
@@ -199,6 +210,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return _response;
@@ -213,6 +225,7 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError($"Ocurrió un error en el servidor.");
+                    _response.ErrorMessages = new List<string> { $"Ocurrió un error en el servidor." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(ModelState);
@@ -220,6 +233,7 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (await _authorRepository.Get(v => v.Name.ToLower() == authorCreateDto.Name.ToLower()) != null)
                 {
                     _logger.LogError($"El nombre {authorCreateDto.Name} ya existe en el sistema");
+                    _response.ErrorMessages = new List<string> { $"El nombre {authorCreateDto.Name} ya existe en el sistema." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     ModelState.AddModelError("NameAlreadyExists", $"El nombre {authorCreateDto.Name} ya existe en el sistema.");
@@ -244,6 +258,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return _response;
@@ -251,13 +266,14 @@ namespace WebAPI_tutorial_recursos.Controllers
 
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
-        public async Task<ActionResult> DeleteAuthor(int id)
+        public async Task<ActionResult<APIResponse>> DeleteAuthor(int id)
         {
             try
             {
                 if (id <= 0)
                 {
                     _logger.LogError($"El Id {id} es inválido.");
+                    _response.ErrorMessages = new List<string> { $"El Id {id} es inválido." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
@@ -266,7 +282,8 @@ namespace WebAPI_tutorial_recursos.Controllers
                 var author = await _authorRepository.Get(v => v.Id == id);
                 if (author == null)
                 {
-                    _logger.LogError($"Autor no encontrado, Id: {id}.");
+                    _logger.LogError($"Autor no encontrado ID = {id}.");
+                    _response.ErrorMessages = new List<string> { $"Autor no encontrado ID = {id}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
@@ -281,6 +298,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return BadRequest(_response);
@@ -291,24 +309,41 @@ namespace WebAPI_tutorial_recursos.Controllers
         /// Clase PUT: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/13816178#notes
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="updatedAuthorDto"></param>
+        /// <param name="authorCreateDTO"></param>
         /// <returns></returns>
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> UpdateAuthor(int id, [FromBody] AuthorUpdateDTO updatedAuthorDto)
+        public async Task<ActionResult<APIResponse>> UpdateAuthor(int id, AuthorCreateDTO authorCreateDTO)
         {
             try
             {
-                if (updatedAuthorDto == null || id != updatedAuthorDto.Id)
+                if (id <= 0)
                 {
-                    _logger.LogError($"El Id {id} es inválido.");
+                    _logger.LogError($"Datos de entrada inválidos.");
+                    _response.ErrorMessages = new List<string> { $"Datos de entrada inválidos." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
 
-                var updatedAuthor = await _authorRepository.Update(_mapper.Map<Author>(updatedAuthorDto));
+                var author = await _authorRepository.Get(v => v.Id == id, tracked:false);
+                if (author == null)
+                {
+                    _logger.LogError($"Autor no encontrado ID = {id}.");
+                    _response.ErrorMessages = new List<string> { $"Autor no encontrado ID = {id}" };
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return BadRequest(_response);
+                }
+
+                author = _mapper.Map<Author>(authorCreateDTO);
+                author.Id = id;
+                var updatedAuthor = await _authorRepository.Update(author);
+
+                //author = _mapper.Map(authorCreateDTO, author);
+                //await _authorRepository.Save();
+
                 _logger.LogInformation($"Se actualizó correctamente el autor Id:{id}.");
                 _response.Result = _mapper.Map<AuthorDTO>(updatedAuthor);
                 _response.StatusCode = HttpStatusCode.OK;
@@ -319,6 +354,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return BadRequest(_response);
@@ -336,7 +372,7 @@ namespace WebAPI_tutorial_recursos.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        public async Task<ActionResult> UpdatePartialAuthor(int id, JsonPatchDocument<AuthorUpdateDTO> patchDto)
+        public async Task<ActionResult<APIResponse>> UpdatePartialAuthor(int id, JsonPatchDocument<AuthorCreateDTO> patchDto)
         {
             try
             {
@@ -344,25 +380,24 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (patchDto == null || id <= 0)
                 {
                     _logger.LogError($"El Id {id} es inválido.");
+                    _response.ErrorMessages = new List<string> { $"El Id {id} es inválido." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
 
                 // Obtener el DTO existente
-                AuthorUpdateDTO authorDto = _mapper.Map<AuthorUpdateDTO>(await _authorRepository.Get(v => v.Id == id, tracked: false));
-
-                // Verificar si el authorDto existe
-                if (authorDto == null)
+                AuthorCreateDTO authorCreateDTO = _mapper.Map<AuthorCreateDTO>(await _authorRepository.Get(v => v.Id == id, tracked: false));
+                if (authorCreateDTO == null)
                 {
-                    _logger.LogError($"Autor no encontrado, Id: {id}.");
+                    _logger.LogError($"Autor no encontrado ID = {id}.");
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
 
                 // Aplicar el parche
-                patchDto.ApplyTo(authorDto, error =>
+                patchDto.ApplyTo(authorCreateDTO, error =>
                 {
                     ModelState.AddModelError("", error.ErrorMessage);
                 });
@@ -370,12 +405,13 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError($"Ocurrió un error en el servidor.");
+                    _response.ErrorMessages = new List<string> { $"Ocurrió un error en el servidor." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(ModelState);
                 }
 
-                Author author = _mapper.Map<Author>(authorDto);
+                Author author = _mapper.Map<Author>(authorCreateDTO);
                 var updatedAuthor = await _authorRepository.Update(author);
                 _logger.LogInformation($"Se actualizó correctamente el autor Id:{id}.");
 
@@ -388,6 +424,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return Ok(_response);

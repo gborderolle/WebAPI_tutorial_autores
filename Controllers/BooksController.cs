@@ -1,15 +1,19 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebAPI_tutorial_recursos.DTOs;
 using WebAPI_tutorial_recursos.Models;
+using WebAPI_tutorial_recursos.Repository;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
 
 namespace WebAPI_tutorial_recursos.Controllers
 {
     [ApiController]
     [Route("api/books")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public class BooksController : ControllerBase
     {
         private readonly ILogger<BooksController> _logger; // Logger para registrar eventos.
@@ -38,6 +42,7 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (bookList.Count == 0)
                 {
                     _logger.LogError($"No hay libros.");
+                    _response.ErrorMessages = new List<string> { $"No hay libros." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NoContent;
                     return NotFound(_response);
@@ -51,13 +56,14 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return Ok(_response);
         }
 
         [HttpGet("{id:int}", Name = "GetBook")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTOWithAuthors))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<APIResponse>> GetBook(int id)
@@ -67,6 +73,7 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (id <= 0)
                 {
                     _logger.LogError($"Error al obtener el libro = {id}");
+                    _response.ErrorMessages = new List<string> { $"Error al obtener el libro = {id}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
@@ -90,13 +97,16 @@ namespace WebAPI_tutorial_recursos.Controllers
 
                 if (book == null)
                 {
-                    _logger.LogError($"El libro ID = {id} no existe.");
+                    _logger.LogError($"Libro no encontrado ID = {id}.");
+                    _response.ErrorMessages = new List<string> { $"Libro no encontrado ID = {id}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
 
-                _response.Result = _mapper.Map<BookDTO>(book);
+                book.AuthorBookList = book.AuthorBookList.OrderBy(x => x.Order).ToList();
+
+                _response.Result = _mapper.Map<BookDTOWithAuthors>(book);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -104,6 +114,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return _response;
@@ -111,53 +122,58 @@ namespace WebAPI_tutorial_recursos.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        public async Task<ActionResult<APIResponse>> CreateBook([FromBody] BookCreateDTO libroCreateDto)
+        public async Task<ActionResult<APIResponse>> CreateBook([FromBody] BookCreateDTO bookCreateDTO)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError($"Ocurrió un error en el servidor.");
+                    _response.ErrorMessages = new List<string> { $"Ocurrió un error en el servidor." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(ModelState);
                 }
-                if (libroCreateDto.AuthorsIds == null)
+                if (bookCreateDTO.AuthorsIds == null)
                 {
                     _logger.LogError("No se puede crear un libro sin autores.");
+                    _response.ErrorMessages = new List<string> { $"No se puede crear un libro sin autores." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     ModelState.AddModelError("NotExists", "No se puede crear un libro sin autores.\");.");
                     return BadRequest(ModelState);
                 }
 
-                var authorsList = await _authorRepository.GetAll(v => libroCreateDto.AuthorsIds.Contains(v.Id));
-                if (authorsList.Count!= libroCreateDto.AuthorsIds.Count)
+                var authorsList = await _authorRepository.GetAll(v => bookCreateDTO.AuthorsIds.Contains(v.Id));
+                if (authorsList.Count != bookCreateDTO.AuthorsIds.Count)
                 {
                     _logger.LogError("No existe uno de los autores enviados.");
+                    _response.ErrorMessages = new List<string> { $"No existe uno de los autores enviados." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     ModelState.AddModelError("NotExists", "No existe uno de los autores enviados.");
                     return BadRequest(ModelState);
                 }
-              
-                Book modelo = _mapper.Map<Book>(libroCreateDto);
 
-                await _bookRepository.Create(modelo);
-                _logger.LogInformation($"Se creó correctamente el libro = {modelo.Id}.");
+                Book model = _mapper.Map<Book>(bookCreateDTO);
+                model = SetAuthorsOrder(model);
 
-                _response.Result = _mapper.Map<BookDTO>(modelo);
+                await _bookRepository.Create(model);
+                _logger.LogInformation($"Se creó correctamente el libro = {model.Id}.");
+
+                _response.Result = _mapper.Map<BookDTO>(model);
                 _response.StatusCode = HttpStatusCode.Created;
 
 
                 // CreatedAtRoute -> Nombre de la ruta (del método): GetBook
                 // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/13816172#notes
-                return CreatedAtRoute("GetBook", new { id = modelo.Id }, _response); // objeto que devuelve (el que creó)
+                return CreatedAtRoute("GetBook", new { id = model.Id }, _response); // objeto que devuelve (el que creó)
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return _response;
@@ -165,13 +181,14 @@ namespace WebAPI_tutorial_recursos.Controllers
 
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
-        public async Task<IActionResult> DeleteBook(int id)
+        public async Task<ActionResult<APIResponse>> DeleteBook(int id)
         {
             try
             {
                 if (id <= 0)
                 {
                     _logger.LogError($"Datos de entrada no válidos: {id}.");
+                    _response.ErrorMessages = new List<string> { $"Datos de entrada no válidos: {id}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
@@ -180,7 +197,8 @@ namespace WebAPI_tutorial_recursos.Controllers
                 var libro = await _bookRepository.Get(v => v.Id == id);
                 if (libro == null)
                 {
-                    _logger.LogError($"Registro no encontrado: {id}.");
+                    _logger.LogError($"Libro no encontrado ID = {id}.");
+                    _response.ErrorMessages = new List<string> { $"Libro no encontrado ID = {id}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
@@ -195,6 +213,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return BadRequest(_response);
@@ -204,21 +223,46 @@ namespace WebAPI_tutorial_recursos.Controllers
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateBook(int id, [FromBody] BookUpdateDTO updatedBookDto)
+        public async Task<ActionResult<APIResponse>> UpdateBook(int id, BookCreateDTO bookCreateDTO)
         {
             try
             {
-                if (updatedBookDto == null || id != updatedBookDto.Id)
+                if (id <= 0)
                 {
-                    _logger.LogError($"Datos de entrada no válidos: {id}.");
+                    _logger.LogError($"Datos de entrada inválidos.");
+                    _response.ErrorMessages = new List<string> { $"Datos de entrada inválidos." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
 
-                var updatedBook = await _bookRepository.Update(_mapper.Map<Book>(updatedBookDto));
-                _logger.LogInformation($"Se actualizó correctamente el libro = {id}.");
-                _response.Result = _mapper.Map<BookDTO>(updatedBook);
+                var thenIncludeConfig = new ThenIncludePropertyConfiguration<Book>
+                {
+                    IncludeExpression = b => b.AuthorBookList,
+                    ThenIncludeExpression = ab => ((AuthorBook)ab).Author
+                };
+
+                var book = await _bookRepository.Get(
+                    v => v.Id == id,
+                    //tracked: false,
+                    thenIncludes: new[] { thenIncludeConfig }
+                );
+
+                if (book == null)
+                {
+                    _logger.LogError($"Libro no encontrado ID = {id}.");
+                    _response.ErrorMessages = new List<string> { $"Libro no encontrado ID = {id}" };
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return BadRequest(_response);
+                }
+
+                book = SetAuthorsOrder(book);
+                book = _mapper.Map(bookCreateDTO, book);
+                await _bookRepository.Save();
+
+                _logger.LogInformation($"Se actualizó correctamente el libro ID = {id}.");
+                _response.Result = _mapper.Map<BookDTO>(book);
                 _response.StatusCode = HttpStatusCode.OK;
 
                 return Ok(_response);
@@ -227,6 +271,7 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString()
             };
             }
@@ -239,33 +284,33 @@ namespace WebAPI_tutorial_recursos.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        public async Task<IActionResult> UpdatePartialBook(int id, JsonPatchDocument<BookUpdateDTO> patchDto)
+        public async Task<ActionResult<APIResponse>> UpdatePartialBook(int id, JsonPatchDocument<BookCreateDTO> patchDTO)
         {
             try
             {
                 // Validar entrada
-                if (patchDto == null || id <= 0)
+                if (patchDTO == null || id <= 0)
                 {
                     _logger.LogError($"Datos de entrada no válidos: {id}.");
+                    _response.ErrorMessages = new List<string> { $"Datos de entrada no válidos: {id}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
 
                 // Obtener el DTO existente
-                BookUpdateDTO bookDto = _mapper.Map<BookUpdateDTO>(await _bookRepository.Get(v => v.Id == id, tracked: false));
-
-                // Verificar si el libroDto existe
-                if (bookDto == null)
+                BookCreateDTO bookCreateDTO = _mapper.Map<BookCreateDTO>(await _bookRepository.Get(v => v.Id == id, tracked: false));
+                if (bookCreateDTO == null)
                 {
-                    _logger.LogError($"No se encontró el libro = {id}.");
+                    _logger.LogError($"Libro no encontrado ID = {id}.");
+                    _response.ErrorMessages = new List<string> { $"Libro no encontrado ID = {id}." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
 
                 // Aplicar el parche
-                patchDto.ApplyTo(bookDto, error =>
+                patchDTO.ApplyTo(bookCreateDTO, error =>
                 {
                     ModelState.AddModelError("", error.ErrorMessage);
                 });
@@ -273,12 +318,13 @@ namespace WebAPI_tutorial_recursos.Controllers
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError($"Ocurrió un error en el servidor.");
+                    _response.ErrorMessages = new List<string> { $"Ocurrió un error en el servidor." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(ModelState);
                 }
 
-                Book libro = _mapper.Map<Book>(bookDto);
+                Book libro = _mapper.Map<Book>(bookCreateDTO);
                 var updatedBook = await _bookRepository.Update(libro);
                 _logger.LogInformation($"Se actualizó correctamente el libro = {id}.");
 
@@ -291,11 +337,23 @@ namespace WebAPI_tutorial_recursos.Controllers
             {
                 _logger.LogError(ex.ToString());
                 _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return Ok(_response);
         }
 
+        private Book SetAuthorsOrder(Book model)
+        {
+            if (model.AuthorBookList != null)
+            {
+                for (int i = 0; i < model.AuthorBookList.Count; i++)
+                {
+                    model.AuthorBookList[i].Order = i;
+                }
+            }
+            return model;
+        }
+
     }
 }
-

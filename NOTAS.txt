@@ -1,5 +1,6 @@
 ﻿
---
+// -------------------
+
 
 DEPLOY:
 Para mandar a producción definitivamente, en propiedades del proyecto, cambiar la variable de entorno: ASPNETCORE_ENVIRONMENT de Development a Production.
@@ -10,16 +11,41 @@ Proveedores de configuración:
 - AppSetings.json
 - Variables de ambiente
 
---
+Usar los 2 appsettings.json:
+- Development
+- Production
+
+// -------------------
+
+Analizar tokens con claims:
+Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27047714#notes
+https://jwt.io/
+
+
+
+
+// -------------------
 
 Lista de respuestas HTTP:
 
 ---- Los 200:
+200: Ok
+201: Created
+204: NoContent
+
+
 ---- Los 300:
 ---- Los 400:
 
+400: Falló alguna validación
 401: Falta autorización para consumir el endpoint
+403: Forbbiden: No tiene permisos (rol no autorizado)
 404: Recurso no encontrado
 
 
 ---- Los 500: errores del servidor
+
+
+// -------------------
+
+

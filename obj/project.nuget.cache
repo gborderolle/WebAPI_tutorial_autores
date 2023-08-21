@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GTJlLhlHk9e2eFEoymCjPSdMmZprT2FrPA5Zd7MJx5renutRgFA8V7nUT52bN/PY6XRWMdNfaMTrcBQQYtXNsw==",
+  "dgSpecHash": "f+HY3g1gl8uOViJ2ux6uGGhKaiSj5OYr6IUsiLIHGJpUC1WucLNrJgMqwRykpCXejfvGZVSFSIyYbNHWgRISFg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_recursos\\WebAPI_tutorial_recursos.csproj",
+  "projectFilePath": "D:\\Documents\\GitHub\\WebAPI_tutorial_recursos\\WebAPI_tutorial_recursos\\WebAPI_tutorial_recursos.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Gonzalo\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Gonzalo\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

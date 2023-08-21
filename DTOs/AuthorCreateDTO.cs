@@ -14,6 +14,5 @@ namespace WebAPI_tutorial_recursos.DTOs
 
         public DateTime Update { get; set; }
 
-
     }
 }

@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using System.Text.Json.Serialization;
 using WebAPI_tutorial_recursos.Context;
 using WebAPI_tutorial_recursos.Filters;
@@ -16,6 +20,8 @@ namespace WebAPI_tutorial_recursos
 
         public Startup(IConfiguration configuration)
         {
+            // Limpia los mapeos de los tipos de los Claims (del login de usuario)
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27047628#notes
             Configuration = configuration;
         }
 
@@ -32,14 +38,39 @@ namespace WebAPI_tutorial_recursos
             }
             ).AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); // para arreglar errores de loop de relaciones 1..n y viceversa
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header
+                });
+
+                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference=new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{ }
+                    }
+                });
+            });
 
             // Configuración de la base de datos
-            var isLocalConnectionString = Configuration.GetValue<bool>("ConnectionStrings:ConnectionString_isLocal");
-            var connectionStringKey = isLocalConnectionString ? "ConnectionString_WebAPI_tutorial_local" : "ConnectionString_WebAPI_tutorial_remote";
+            //var isLocalConnectionString = Configuration.GetValue<bool>("ConnectionStrings:ConnectionString_isLocal");
+            //var connectionStringKey = isLocalConnectionString ? "ConnectionString_WebAPI_tutorial_local" : "ConnectionString_WebAPI_tutorial_remote";
             services.AddDbContext<ContextDB>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString(connectionStringKey));
+                options.UseSqlServer(Configuration.GetConnectionString("ConnectionString_WebAPI_tutorial"));
             });
 
             services.AddAutoMapper(typeof(Startup));
@@ -56,12 +87,42 @@ namespace WebAPI_tutorial_recursos
 
             // --------------
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(Configuration["KeyJwt"])),
+                    ClockSkew = TimeSpan.Zero
+                });
 
             // Identity Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27047608#notes
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ContextDB>()
                 .AddDefaultTokenProviders();
+
+            // Autorización basada en Claims
+            // Agregar los roles del sistema
+            // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27047710#notes
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IsAdmin", policy => policy.RequireClaim("IsAdmin"));
+            });
+
+            // Configuración CORS: para permitir recibir peticiones http desde un origen específico
+            // CORS Sólo sirve para aplicaciones web (Angular, React, etc)
+            // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27047732#notes
+            // apirequest.io
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("https://apirequest.io").AllowAnyMethod().AllowAnyHeader();
+                });
+            });
 
         }
 
@@ -84,6 +145,7 @@ namespace WebAPI_tutorial_recursos
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors(); // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27047732#notes
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

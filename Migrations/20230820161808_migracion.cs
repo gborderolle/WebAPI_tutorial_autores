@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace WebAPI_tutorial_recursos.Migrations
 {
     /// <inheritdoc />
-    public partial class SistemaUsuarios : Migration
+    public partial class migracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +50,36 @@ namespace WebAPI_tutorial_recursos.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Author",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Creation = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Update = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Author", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Book",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Creation = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Update = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Book", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,54 +188,71 @@ namespace WebAPI_tutorial_recursos.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.UpdateData(
-                table: "Author",
-                keyColumn: "Id",
-                keyValue: 1,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5243), new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5253) });
+            migrationBuilder.CreateTable(
+                name: "AuthorBook",
+                columns: table => new
+                {
+                    AuthorId = table.Column<int>(type: "int", nullable: false),
+                    BookId = table.Column<int>(type: "int", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuthorBook", x => new { x.AuthorId, x.BookId });
+                    table.ForeignKey(
+                        name: "FK_AuthorBook_Author_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Author",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AuthorBook_Book_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Book",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
-            migrationBuilder.UpdateData(
-                table: "Author",
-                keyColumn: "Id",
-                keyValue: 2,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5256), new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5257) });
+            migrationBuilder.CreateTable(
+                name: "Review",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BookId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Review", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Review_Book_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Book",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
-            migrationBuilder.UpdateData(
+            migrationBuilder.InsertData(
                 table: "Author",
-                keyColumn: "Id",
-                keyValue: 3,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5258), new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5258) });
+                columns: new[] { "Id", "Creation", "Name", "Update" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3974), "Gonzalo", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3984) },
+                    { 2, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3988), "Ramiro", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3988) },
+                    { 3, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3989), "Daniel", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3989) },
+                    { 4, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3990), "Gastón", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3990) },
+                    { 5, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3992), "Martín", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3992) }
+                });
 
-            migrationBuilder.UpdateData(
-                table: "Author",
-                keyColumn: "Id",
-                keyValue: 4,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5259), new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5260) });
-
-            migrationBuilder.UpdateData(
-                table: "Author",
-                keyColumn: "Id",
-                keyValue: 5,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5261), new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5261) });
-
-            migrationBuilder.UpdateData(
+            migrationBuilder.InsertData(
                 table: "Book",
-                keyColumn: "Id",
-                keyValue: 1,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5421), new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5421) });
-
-            migrationBuilder.UpdateData(
-                table: "Book",
-                keyColumn: "Id",
-                keyValue: 2,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5423), new DateTime(2023, 8, 20, 9, 18, 21, 164, DateTimeKind.Local).AddTicks(5423) });
+                columns: new[] { "Id", "Creation", "Title", "Update" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4104), "El libro de la selva", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4104) },
+                    { 2, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4106), "La vida de Steve Jobs", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4106) }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -243,6 +292,16 @@ namespace WebAPI_tutorial_recursos.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuthorBook_BookId",
+                table: "AuthorBook",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Review_BookId",
+                table: "Review",
+                column: "BookId");
         }
 
         /// <inheritdoc />
@@ -264,59 +323,22 @@ namespace WebAPI_tutorial_recursos.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "AuthorBook");
+
+            migrationBuilder.DropTable(
+                name: "Review");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
-            migrationBuilder.UpdateData(
-                table: "Author",
-                keyColumn: "Id",
-                keyValue: 1,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(63), new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(74) });
+            migrationBuilder.DropTable(
+                name: "Author");
 
-            migrationBuilder.UpdateData(
-                table: "Author",
-                keyColumn: "Id",
-                keyValue: 2,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(77), new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(77) });
-
-            migrationBuilder.UpdateData(
-                table: "Author",
-                keyColumn: "Id",
-                keyValue: 3,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(78), new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(79) });
-
-            migrationBuilder.UpdateData(
-                table: "Author",
-                keyColumn: "Id",
-                keyValue: 4,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(80), new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(80) });
-
-            migrationBuilder.UpdateData(
-                table: "Author",
-                keyColumn: "Id",
-                keyValue: 5,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(81), new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(82) });
-
-            migrationBuilder.UpdateData(
-                table: "Book",
-                keyColumn: "Id",
-                keyValue: 1,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(200), new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(201) });
-
-            migrationBuilder.UpdateData(
-                table: "Book",
-                keyColumn: "Id",
-                keyValue: 2,
-                columns: new[] { "Creation", "Update" },
-                values: new object[] { new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(202), new DateTime(2023, 8, 19, 23, 42, 49, 660, DateTimeKind.Local).AddTicks(203) });
+            migrationBuilder.DropTable(
+                name: "Book");
         }
     }
 }

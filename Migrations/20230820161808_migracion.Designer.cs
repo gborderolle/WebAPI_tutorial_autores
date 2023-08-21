@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAPI_tutorial_recursos.Context;
 
@@ -11,9 +12,11 @@ using WebAPI_tutorial_recursos.Context;
 namespace WebAPI_tutorial_recursos.Migrations
 {
     [DbContext(typeof(ContextDB))]
-    partial class ContextDBModelSnapshot : ModelSnapshot
+    [Migration("20230820161808_migracion")]
+    partial class migracion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -247,37 +250,37 @@ namespace WebAPI_tutorial_recursos.Migrations
                         new
                         {
                             Id = 1,
-                            Creation = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6391),
+                            Creation = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3974),
                             Name = "Gonzalo",
-                            Update = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6399)
+                            Update = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3984)
                         },
                         new
                         {
                             Id = 2,
-                            Creation = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6403),
+                            Creation = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3988),
                             Name = "Ramiro",
-                            Update = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6403)
+                            Update = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3988)
                         },
                         new
                         {
                             Id = 3,
-                            Creation = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6404),
+                            Creation = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3989),
                             Name = "Daniel",
-                            Update = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6404)
+                            Update = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3989)
                         },
                         new
                         {
                             Id = 4,
-                            Creation = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6405),
+                            Creation = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3990),
                             Name = "Gastón",
-                            Update = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6405)
+                            Update = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3990)
                         },
                         new
                         {
                             Id = 5,
-                            Creation = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6406),
+                            Creation = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3992),
                             Name = "Martín",
-                            Update = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6406)
+                            Update = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3992)
                         });
                 });
 
@@ -326,16 +329,16 @@ namespace WebAPI_tutorial_recursos.Migrations
                         new
                         {
                             Id = 1,
-                            Creation = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6540),
+                            Creation = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4104),
                             Title = "El libro de la selva",
-                            Update = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6541)
+                            Update = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4104)
                         },
                         new
                         {
                             Id = 2,
-                            Creation = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6543),
+                            Creation = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4106),
                             Title = "La vida de Steve Jobs",
-                            Update = new DateTime(2023, 8, 20, 15, 2, 31, 348, DateTimeKind.Local).AddTicks(6544)
+                            Update = new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4106)
                         });
                 });
 
@@ -353,14 +356,9 @@ namespace WebAPI_tutorial_recursos.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Review");
                 });
@@ -443,13 +441,7 @@ namespace WebAPI_tutorial_recursos.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Book");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WebAPI_tutorial_recursos.Models.Author", b =>
