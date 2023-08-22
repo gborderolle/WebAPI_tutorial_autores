@@ -3,6 +3,8 @@ using System.Linq.Expressions;
 using System.Linq;
 using WebAPI_tutorial_recursos.Context;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
+using WebAPI_tutorial_recursos.Utilities;
+using WebAPI_tutorial_recursos.DTOs;
 
 namespace WebAPI_tutorial_recursos.Repository
 {
@@ -70,16 +72,25 @@ namespace WebAPI_tutorial_recursos.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<List<T>> GetAllIncluding(Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[] includes)
+        public async Task<List<T>> GetAllIncluding(Expression<Func<T, bool>>? filter = null, Expression<Func<T, object>>? orderBy = null, bool ascendingOrder = true, PaginationDTO paginationDTO = null, HttpContext httpContext = null, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = dbSet;
             foreach (var includeProperty in includes)
             {
                 query = query.Include(includeProperty);
             }
+            if (orderBy != null)
+            {
+                query = ascendingOrder ? query.OrderBy(orderBy) : query.OrderByDescending(orderBy);
+            }
             if (filter != null)
             {
                 query = query.Where(filter);
+            }
+            if (httpContext != null && paginationDTO != null)
+            {
+                await httpContext.InsertParamPaginationHeader(query);
+                query = query.DoPagination(paginationDTO);
             }
             return await query.ToListAsync();
         }

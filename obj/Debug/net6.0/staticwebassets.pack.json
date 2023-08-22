@@ -1,24 +1,24 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_recursos\\wwwroot\\Archivo 1.txt",
+      "Id": "D:\\Documents\\GitHub\\WebAPI_tutorial_autores\\WebAPI_tutorial_autores\\wwwroot\\Archivo 1.txt",
       "PackagePath": "staticwebassets\\Archivo 1.txt"
     },
     {
-      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.WebAPI_tutorial_recursos.Microsoft.AspNetCore.StaticWebAssets.props",
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.WebAPI_tutorial_autores.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },
     {
-      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.build.WebAPI_tutorial_recursos.props",
-      "PackagePath": "build\\WebAPI_tutorial_recursos.props"
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.build.WebAPI_tutorial_autores.props",
+      "PackagePath": "build\\WebAPI_tutorial_autores.props"
     },
     {
-      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.buildMultiTargeting.WebAPI_tutorial_recursos.props",
-      "PackagePath": "buildMultiTargeting\\WebAPI_tutorial_recursos.props"
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.buildMultiTargeting.WebAPI_tutorial_autores.props",
+      "PackagePath": "buildMultiTargeting\\WebAPI_tutorial_autores.props"
     },
     {
-      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.buildTransitive.WebAPI_tutorial_recursos.props",
-      "PackagePath": "buildTransitive\\WebAPI_tutorial_recursos.props"
+      "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.buildTransitive.WebAPI_tutorial_autores.props",
+      "PackagePath": "buildTransitive\\WebAPI_tutorial_autores.props"
     }
   ],
   "ElementsToRemove": []

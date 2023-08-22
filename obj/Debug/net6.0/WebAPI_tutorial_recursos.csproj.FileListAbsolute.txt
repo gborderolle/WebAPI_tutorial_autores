@@ -196,3 +196,5 @@ D:\Documents\GitHub\WebAPI_tutorial_recursos\WebAPI_tutorial_recursos\bin\Debug\
 D:\Documents\GitHub\WebAPI_tutorial_recursos\WebAPI_tutorial_recursos\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 D:\Documents\GitHub\WebAPI_tutorial_recursos\WebAPI_tutorial_recursos\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
 D:\Documents\GitHub\WebAPI_tutorial_recursos\WebAPI_tutorial_recursos\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll
+D:\Documents\GitHub\WebAPI_tutorial_recursos\WebAPI_tutorial_recursos\bin\Debug\net6.0\WebAPI_tutorial_recursos.xml
+D:\Documents\GitHub\WebAPI_tutorial_recursos\WebAPI_tutorial_recursos\obj\Debug\net6.0\WebAPI_tutorial_recursos.xml

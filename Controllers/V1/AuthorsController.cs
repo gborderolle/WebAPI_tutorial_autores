@@ -7,27 +7,27 @@ using System.Net;
 using WebAPI_tutorial_recursos.DTOs;
 using WebAPI_tutorial_recursos.Models;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
+using WebAPI_tutorial_recursos.Utilities;
 using WebAPI_tutorial_recursos.Utilities.HATEOAS;
 
 namespace WebAPI_tutorial_recursos.Controllers.V1
 {
     [ApiController]
-    [Route("api/v1/authors")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
+    [Route("api/authors")] // Versionado URL, Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148870#notes
+    [HasHeader("x-version", "1")] // "x-version": nombre inventado. "1": versión nro 1. Versionado headers, Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148898#notes
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")] // Requiere estar logueado con usuario ADMIN (salvo los Annonymous)
     public class AuthorsController : ControllerBase
     {
         private readonly ILogger<AuthorsController> _logger; // Logger para registrar eventos.
         private readonly IMapper _mapper;
         private readonly IAuthorRepository _authorRepository; // Servicio que contiene la lógica principal de negocio para authors.
-        private readonly IAuthorizationService _authorizationService;
         protected APIResponse _response;
 
-        public AuthorsController(ILogger<AuthorsController> logger, IMapper mapper, IAuthorRepository authorRepository, IAuthorizationService authorizationService)
+        public AuthorsController(ILogger<AuthorsController> logger, IMapper mapper, IAuthorRepository authorRepository)
         {
             _logger = logger;
             _mapper = mapper;
             _authorRepository = authorRepository;
-            _authorizationService = authorizationService;
             _response = new();
         }
 
@@ -57,30 +57,19 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetAuthorsv1")] // url completa: https://localhost:7003/api/authors/
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AuthorDTO>))]
         [AllowAnonymous] // Permitido sin login
         [ServiceFilter(typeof(HATEOASAuthorFilterAttribute))]
-        public async Task<ActionResult<List<APIResponse>>> Get()
+        public async Task<ActionResult<List<APIResponse>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
             try
             {
-                var authorList = await _authorRepository.GetAllIncluding(null);
-                if (authorList.Count == 0)
-                {
-                    _logger.LogError($"No hay autores.");
-                    _response.ErrorMessages = new List<string> { $"No hay autores." };
-                    _response.IsSuccess = false;
-                    _response.StatusCode = HttpStatusCode.NoContent;
-                    return NotFound(_response);
-                }
-
-                _logger.LogInformation("Obtener todas los autores.");
-                _response.StatusCode = HttpStatusCode.OK;
+                var authorList = await _authorRepository.GetAllIncluding(orderBy: x => x.Name, ascendingOrder:false, httpContext: HttpContext, paginationDTO: paginationDTO);
 
                 // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148814#notes
                 // Navegación de los elementos (HATEOAS)
                 // Uso de HATEOAS para listas, Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148838#notes
                 _response.Result = _mapper.Map<List<AuthorDTO>>(authorList); ;
+                _response.StatusCode = HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
@@ -92,10 +81,12 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
             return Ok(_response);
         }
 
+        /// <summary>
+        /// Obtener autor por ID
+        /// </summary>
+        /// <param name="id">ID del autor</param>
+        /// <returns></returns>
         [HttpGet("{id:int}", Name = "GetAuthorByIdv1")] // url completa: https://localhost:7003/api/authors/1
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorDTOWithBooks))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         [ServiceFilter(typeof(HATEOASAuthorFilterAttribute))]
         public async Task<ActionResult<APIResponse>> Get(int id)
@@ -147,10 +138,12 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
             return _response;
         }
 
+        /// <summary>
+        /// Obtener el primer autor por nombre
+        /// </summary>
+        /// <param name="name">Nombre del autor</param>
+        /// <returns></returns>
         [HttpGet("searchFirstAuthorByName/{name}", Name = "SearchFirstAuthorByNamev1")] // url completa: https://localhost:7003/api/authors/gonzalo
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<APIResponse>> GetFirst([FromRoute] string name)
         {
             try
@@ -188,10 +181,12 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
             return _response;
         }
 
+        /// <summary>
+        /// Obtener todos los autores por nombre
+        /// </summary>
+        /// <param name="name">Nombre del autor</param>
+        /// <returns></returns>
         [HttpGet("searchAllAuthorsByName/{name}", Name = "SearchAllAuthorsByNamev1")] // url completa: https://localhost:7003/api/authors/gonzalo
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AuthorDTO>))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<APIResponse>> GetByName([FromRoute] string name)
         {
             try
@@ -229,8 +224,12 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
             return _response;
         }
 
+        /// <summary>
+        /// Crear un autor
+        /// </summary>
+        /// <param name="authorCreateDto"></param>
+        /// <returns></returns>
         [HttpPost(Name = "CreateAuthorv1")]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AuthorDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         public async Task<ActionResult<APIResponse>> Post([FromBody] AuthorCreateDTO authorCreateDto)
         {
             try
@@ -277,8 +276,12 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
             return _response;
         }
 
+        /// <summary>
+        /// Borrar un autor
+        /// </summary>
+        /// <param name="id">ID del autor</param>
+        /// <returns></returns>
         [HttpDelete("{id:int}", Name = "DeleteAuthorv1")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         public async Task<ActionResult<APIResponse>> Delete(int id)
         {
             try
@@ -325,8 +328,6 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         /// <param name="authorCreateDTO"></param>
         /// <returns></returns>
         [HttpPut("{id:int}", Name = "UpdateAuthorv1")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> Put(int id, AuthorCreateDTO authorCreateDTO)
         {
             try
@@ -381,10 +382,6 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         /// <param name="patchDto"></param>
         /// <returns></returns>
         [HttpPatch("{id:int}", Name = "UpdatePartialAuthorv1")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         public async Task<ActionResult<APIResponse>> Patch(int id, JsonPatchDocument<AuthorCreateDTO> patchDto)
         {
             try

@@ -7,11 +7,13 @@ using System.Net;
 using WebAPI_tutorial_recursos.DTOs;
 using WebAPI_tutorial_recursos.Models;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
+using WebAPI_tutorial_recursos.Utilities;
 
 namespace WebAPI_tutorial_recursos.Controllers.V1
 {
     [ApiController]
-    [Route("api/v1/books")]
+    [Route("api/books")]
+    [HasHeader("x-version", "1")] // "x-version": nombre inventado. "1": versión nro 1. Versionado headers, Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148898#notes
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public class BooksController : ControllerBase
     {
@@ -33,25 +35,15 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         #region Endpoints
 
         [HttpGet(Name = "GetBooksv1")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<BookDTO>))]
-        public async Task<ActionResult<List<APIResponse>>> Get()
+        public async Task<ActionResult<List<APIResponse>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
             try
             {
-                //var bookList = await _repositoryBook.GetAll(includes: b => b.Author); // incluye los autores de cada libro
-                var bookList = await _bookRepository.GetAll(); // incluye los autores de cada libro
-                if (bookList.Count == 0)
-                {
-                    _logger.LogError($"No hay libros.");
-                    _response.ErrorMessages = new List<string> { $"No hay libros." };
-                    _response.IsSuccess = false;
-                    _response.StatusCode = HttpStatusCode.NoContent;
-                    return NotFound(_response);
-                }
+                var bookList = await _bookRepository.GetAllIncluding(httpContext: HttpContext, paginationDTO: paginationDTO);
 
                 _logger.LogInformation("Obtener todos los libros.");
-                _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = _mapper.Map<IEnumerable<BookDTO>>(bookList);
+                _response.StatusCode = HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
@@ -64,9 +56,6 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         }
 
         [HttpGet("{id:int}", Name = "GetBookv1")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTOWithAuthors))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<APIResponse>> Get(int id)
         {
             try
@@ -122,7 +111,6 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         }
 
         [HttpPost(Name = "CreateBookv1")]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         public async Task<ActionResult<APIResponse>> Post([FromBody] BookCreateDTO bookCreateDTO)
         {
             try
@@ -181,7 +169,6 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         }
 
         [HttpDelete("{id:int}", Name = "DeleteBookv1")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         public async Task<ActionResult<APIResponse>> Delete(int id)
         {
             try
@@ -220,10 +207,7 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
             return BadRequest(_response);
         }
 
-        // Endpoint para actualizar una libro por ID.
         [HttpPut("{id:int}", Name = "UpdateBookv1")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> Put(int id, BookCreateDTO bookCreateDTO)
         {
             try
@@ -279,12 +263,7 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
             return BadRequest(_response);
         }
 
-        // Endpoint para hacer una actualización parcial de una libro por ID.
         [HttpPatch("{id:int}", Name = "UpdatePartialBookByIdv1")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         public async Task<ActionResult<APIResponse>> Patch(int id, JsonPatchDocument<BookCreateDTO> patchDTO)
         {
             try

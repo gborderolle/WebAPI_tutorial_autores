@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebAPI_tutorial_recursos.DTOs;
 using WebAPI_tutorial_recursos.Models;
+using WebAPI_tutorial_recursos.Repository;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
+using WebAPI_tutorial_recursos.Utilities;
 
 namespace WebAPI_tutorial_recursos.Controllers.V1
 {
@@ -15,7 +17,9 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
     /// Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/26946890#notes
     /// </summary>
     [ApiController]
-    [Route("api/v1/books/{bookId:int}/reviews")] // indica la dependencia 0..n de Reviews a Books (no existe review sin book). URL: primero el /book, después los /reviews. 
+    //[Route("api/v1/books/{bookId:int}/reviews")] // indica la dependencia 0..n de Reviews a Books (no existe review sin book). URL: primero el /book, después los /reviews. 
+    [Route("api/books/{bookId:int}/reviews")] // Versionado URL, Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148870#notes
+    [HasHeader("x-version", "1")] // "x-version": nombre inventado. "1": versión nro 1. Versionado headers, Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148898#notes
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ReviewsController : ControllerBase
     {
@@ -39,8 +43,7 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         #region Endpoints
 
         [HttpGet(Name = "GetReviewsv1")] // url completa: https://localhost:7003/api/books/{bookId}/reviews/
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ReviewDTO>))]
-        public async Task<ActionResult<List<APIResponse>>> Get(int bookId)
+        public async Task<ActionResult<List<APIResponse>>> Get(int bookId, [FromQuery] PaginationDTO paginationDTO)
         {
             try
             {
@@ -60,18 +63,11 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
                     return NotFound(_response);
                 }
 
-                var reviewList = await _reviewRepository.GetAll(v => v.BookId == bookId);
-                if (reviewList.Count == 0)
-                {
-                    _logger.LogError($"No hay reviews.");
-                    _response.IsSuccess = false;
-                    _response.StatusCode = HttpStatusCode.NoContent;
-                    return NotFound(_response);
-                }
+                var reviewList = await _reviewRepository.GetAllIncluding(v => v.BookId == bookId, httpContext: HttpContext, paginationDTO: paginationDTO);
 
                 _logger.LogInformation("Obtener todas los reviews.");
-                _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = _mapper.Map<IEnumerable<ReviewDTO>>(reviewList);
+                _response.StatusCode = HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
@@ -84,9 +80,6 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         }
 
         [HttpGet("{id:int}", Name = "GetReviewByIdv1")] // url completa: https://localhost:7003/api/authors/1
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReviewDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<APIResponse>> Get(int bookId, int id)
         {
             try
@@ -135,7 +128,6 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         }
 
         [HttpPost(Name = "CreateReviewv1")]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReviewDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         public async Task<ActionResult<APIResponse>> Post(int bookId, ReviewCreateDTO reviewCreateDTO)
         {
             try
@@ -196,7 +188,6 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         }
 
         [HttpDelete("{id:int}", Name = "DeleteReviewv1")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         public async Task<ActionResult<APIResponse>> Delete(int bookId, int id)
         {
             try
@@ -247,8 +238,6 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
 
         // Endpoint para actualizar una libro por ID.
         [HttpPut("{id:int}", Name = "UpdateReviewv1")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReviewDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> Put(int bookId, int id, ReviewCreateDTO reviewCreateDTO)
         {
             try
@@ -307,10 +296,6 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
         }
 
         [HttpPatch("{id:int}", Name = "UpdatePartialBookv1")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReviewDTO))] // tipo de dato del objeto de la respuesta, siempre devolver DTO
         public async Task<ActionResult<APIResponse>> Patch(int bookId, int id, JsonPatchDocument<ReviewCreateDTO> patchDto)
         {
             try

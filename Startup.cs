@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using WebAPI_tutorial_recursos.Context;
@@ -16,6 +18,7 @@ using WebAPI_tutorial_recursos.Services;
 using WebAPI_tutorial_recursos.Utilities;
 using WebAPI_tutorial_recursos.Utilities.HATEOAS;
 
+[assembly: ApiConventionType(typeof(DefaultApiConventions))] // Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148912#notes
 namespace WebAPI_tutorial_recursos
 {
     public class Startup
@@ -45,11 +48,23 @@ namespace WebAPI_tutorial_recursos
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI_tutorial_recursos", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "WebAPI_tutorial_recursos",
+                    Version = "v1",
+                    Description = "Este es un tutorial de Udemy: Autores y libros.",
+                    Contact = new OpenApiContact
+                    {
+                        Email = "gborderolle@gmail.com",
+                        Name = "Gonzalo Borderolle",
+                        Url = new Uri("https://linkedin.com/in/gborderolle")
+                    }
+                });
                 c.SwaggerDoc("v2", new OpenApiInfo { Title = "WebAPI_tutorial_recursos", Version = "v2" });
                 c.OperationFilter<AddParamHATEOAS>();
+                c.OperationFilter<AddParamXVersion>();
 
-                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
                     Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
@@ -58,7 +73,7 @@ namespace WebAPI_tutorial_recursos
                     In = Microsoft.OpenApi.Models.ParameterLocation.Header
                 });
 
-                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -72,6 +87,10 @@ namespace WebAPI_tutorial_recursos
                         new string[]{ }
                     }
                 });
+
+                var fileXML = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var routeXML = Path.Combine(AppContext.BaseDirectory, fileXML);
+                c.IncludeXmlComments(routeXML);
             });
 
             // Configuración de la base de datos
@@ -130,6 +149,7 @@ namespace WebAPI_tutorial_recursos
                 options.AddDefaultPolicy(builder =>
                 {
                     builder.WithOrigins("https://apirequest.io").AllowAnyMethod().AllowAnyHeader();
+                    builder.WithExposedHeaders(new string[] { "totalSizeRecords" }); // Permite agregar headers customizados. Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148924#notes
                 });
             });
 
@@ -154,7 +174,8 @@ namespace WebAPI_tutorial_recursos
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI(c => { 
+                app.UseSwaggerUI(c =>
+                {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI_tutorial_recursos v1");
                     c.SwaggerEndpoint("/swagger/v2/swagger.json", "WebAPI_tutorial_recursos v2");
                 });

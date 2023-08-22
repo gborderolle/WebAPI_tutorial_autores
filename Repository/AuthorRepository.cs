@@ -2,6 +2,7 @@
 using WebAPI_tutorial_recursos.Context;
 using WebAPI_tutorial_recursos.Models;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebAPI_tutorial_recursos.Repository
 {
@@ -27,5 +28,11 @@ namespace WebAPI_tutorial_recursos.Repository
             await Save();
             return entity;
         }
+
+        public IQueryable<Author> GetAllQueryable()
+        {
+            return dbSet.AsQueryable();
+        }
+
     }
 }
