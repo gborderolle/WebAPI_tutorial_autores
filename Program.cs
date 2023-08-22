@@ -11,6 +11,6 @@ var app = builder.Build();
 
 var serviceLogger = (ILogger<Startup>)app.Services.GetService(typeof(ILogger<Startup>));
 
-startup.Configure(app, app.Environment, serviceLogger);
+startup.Configure(app, app.Environment);
 
 app.Run();

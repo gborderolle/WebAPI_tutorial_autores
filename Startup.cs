@@ -94,8 +94,6 @@ namespace WebAPI_tutorial_recursos
             });
 
             // Configuración de la base de datos
-            //var isLocalConnectionString = Configuration.GetValue<bool>("ConnectionStrings:ConnectionString_isLocal");
-            //var connectionStringKey = isLocalConnectionString ? "ConnectionString_WebAPI_tutorial_local" : "ConnectionString_WebAPI_tutorial_remote";
             services.AddDbContext<ContextDB>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("ConnectionString_WebAPI_tutorial"));
@@ -158,6 +156,11 @@ namespace WebAPI_tutorial_recursos
             services.AddTransient<HATEOASAuthorFilterAttribute>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
+            // ApplicationInsights, Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27187344#notes
+            services.AddApplicationInsightsTelemetry(options =>
+            {
+                options.ConnectionString = Configuration["ApplicationInsights:ConnectionString"];
+            });
         }
 
         /// <summary>
@@ -166,20 +169,21 @@ namespace WebAPI_tutorial_recursos
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Middleware customizado: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/26839760#notes
             app.UseLogResponseHTTP();
 
             if (env.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI_tutorial_recursos v1");
-                    c.SwaggerEndpoint("/swagger/v2/swagger.json", "WebAPI_tutorial_recursos v2");
-                });
+                app.UseDeveloperExceptionPage(); 
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI_tutorial_recursos v1");
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "WebAPI_tutorial_recursos v2");
+            });
 
             app.UseHttpsRedirection();
             app.UseRouting();

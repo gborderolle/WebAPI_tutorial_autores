@@ -90,6 +90,5 @@ namespace WebAPI_tutorial_recursos.Context
             return await GetAuthor(response.Entity.Id);
         }
 
-
     }
 }

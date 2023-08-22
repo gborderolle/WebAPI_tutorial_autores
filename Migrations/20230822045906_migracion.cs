@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace WebAPI_tutorial_recursos.Migrations
+namespace WebAPI_tutorial_autores.Migrations
 {
     /// <inheritdoc />
     public partial class migracion : Migration
@@ -220,11 +220,17 @@ namespace WebAPI_tutorial_recursos.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BookId = table.Column<int>(type: "int", nullable: false)
+                    BookId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Review", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Review_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Review_Book_BookId",
                         column: x => x.BookId,
@@ -238,11 +244,11 @@ namespace WebAPI_tutorial_recursos.Migrations
                 columns: new[] { "Id", "Creation", "Name", "Update" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3974), "Gonzalo", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3984) },
-                    { 2, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3988), "Ramiro", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3988) },
-                    { 3, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3989), "Daniel", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3989) },
-                    { 4, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3990), "Gastón", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3990) },
-                    { 5, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3992), "Martín", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(3992) }
+                    { 1, new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9863), "Gonzalo", new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9886) },
+                    { 2, new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9888), "Ramiro", new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9889) },
+                    { 3, new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9890), "Daniel", new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9891) },
+                    { 4, new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9892), "Gastón", new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9892) },
+                    { 5, new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9893), "Martín", new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9894) }
                 });
 
             migrationBuilder.InsertData(
@@ -250,8 +256,8 @@ namespace WebAPI_tutorial_recursos.Migrations
                 columns: new[] { "Id", "Creation", "Title", "Update" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4104), "El libro de la selva", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4104) },
-                    { 2, new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4106), "La vida de Steve Jobs", new DateTime(2023, 8, 20, 13, 18, 8, 346, DateTimeKind.Local).AddTicks(4106) }
+                    { 1, new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(151), "El libro de la selva", new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(152) },
+                    { 2, new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(153), "La vida de Steve Jobs", new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(154) }
                 });
 
             migrationBuilder.CreateIndex(
@@ -302,6 +308,11 @@ namespace WebAPI_tutorial_recursos.Migrations
                 name: "IX_Review_BookId",
                 table: "Review",
                 column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Review_UserId",
+                table: "Review",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -332,10 +343,10 @@ namespace WebAPI_tutorial_recursos.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Author");
 
             migrationBuilder.DropTable(
-                name: "Author");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Book");

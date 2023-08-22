@@ -21,6 +21,10 @@ Analizar tokens con claims:
 Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27047714#notes
 https://jwt.io/
 
+// 
+
+Application Insights para revisar los errores de la API en Azure:
+Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27187344#notes
 
 
 
@@ -43,7 +47,7 @@ Lista de respuestas HTTP:
 404: Recurso no encontrado
 
 
----- Los 500: errores del servidor
+---- Los 500: errores internos en el servidor
 
 
 // -------------------

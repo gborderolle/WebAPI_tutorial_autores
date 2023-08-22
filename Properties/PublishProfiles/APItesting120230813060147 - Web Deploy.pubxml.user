@@ -6,8 +6,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project>
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAjY7uON1YWkCqSNwd/WUPlgAAAAACAAAAAAAQZgAAAAEAACAAAAAcK36z7PnmIUKjhIoXBf2dduswz4mzrBlnhIEh6dWm5AAAAAAOgAAAAAIAACAAAABiPYgafWu14Cy7udCdsPVHYYdMC5aS5aK3GzOutBZJgYAAAADXLqEI6DbEm22KG3QJ4FkHE99fOHQE+mXP3yTt1r8gfOzC4dFTvQo/HnI1uHPYGXNE1Et9j01HqXUwxLlNhP7vQpUI97zwuY/Scy/bxyxIJ15HH4dQFvz8YtirGMgCy2uHu+VbgYYL4THEMI/qf6O7ucmcPvmrlZJk57s0Ipfus0AAAADf6spi0Qnbs/ONJWk0IkFMIJjzkC/BI8mSla2rKtt8hnGudaZWZWEWfmexRG4VqWgG9Jc2QFPLbqCw57flDGk+</EncryptedPassword>
-    <History>True|2023-08-22T01:35:36.1531571Z;False|2023-08-21T22:34:30.4489080-03:00;False|2023-08-21T22:33:58.8986502-03:00;False|2023-08-21T22:32:52.3664722-03:00;True|2023-08-21T22:25:49.2266509-03:00;True|2023-08-21T21:59:46.0408090-03:00;</History>
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAlIzHt+3tkEWmUzbLWx1GAQAAAAACAAAAAAAQZgAAAAEAACAAAABbWSFXlKGY9BoNID5AnU3t31inEMnob0J1ieQdw6xVogAAAAAOgAAAAAIAACAAAACEznV6FjBqVBCGsG9MojBTeQsSXE7Gh53cKn3i0tOJQIAAAAAxuqTI+2K1R1Bp+iEjFp6gz4Tl23o6tvEVSIr0jBrwiIpopupn8negA+8sm5azl8NE6w/uoSC6YJLamKrqHNs161pcuCqNH3IdKKYdqMWdlJyOo15ZQAI7MjeG3gQTvDrKz4Rrq37FrvvGROt/g7iVo3S8NYTxqkEOWU69Gb32/0AAAADpzsKAKHf0t48jUsmdfpm7KOkzHu6lvtzPGgtGwpe8+S5jG1kJad74+qMed6bW6xknrrxr5XChIqmFCpsovAMy</EncryptedPassword>
+    <History>True|2023-08-22T05:04:19.1002488Z;True|2023-08-22T01:28:14.2373315-03:00;True|2023-08-22T00:59:32.9648310-03:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
+  <ItemGroup>
+    <EFMigrations Include="WebAPI_tutorial_recursos.Context.ContextDB">
+      <Value>Server=tcp:gborderolle.database.windows.net,1433%3bInitial Catalog=WebAPI_tutorial_autores%3bPersist Security Info=False%3bUser ID=CloudSA0a04c757%3bPassword=Gborde154060gb%3bMultipleActiveResultSets=False%3bEncrypt=True%3bTrustServerCertificate=False%3bConnection Timeout=30%3b</Value>
+    </EFMigrations>
+  </ItemGroup>
 </Project>

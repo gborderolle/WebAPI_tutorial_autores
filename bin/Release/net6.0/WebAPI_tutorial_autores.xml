@@ -84,30 +84,6 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "T:WebAPI_tutorial_recursos.Middlewares.LogResponseMiddleware" -->
-        <member name="T:WebAPI_tutorial_recursos.Migrations.migracion">
-            <inheritdoc />
-        </member>
-        <member name="M:WebAPI_tutorial_recursos.Migrations.migracion.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:WebAPI_tutorial_recursos.Migrations.migracion.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:WebAPI_tutorial_recursos.Migrations.migracion.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:WebAPI_tutorial_recursos.Migrations.comentariousuario">
-            <inheritdoc />
-        </member>
-        <member name="M:WebAPI_tutorial_recursos.Migrations.comentariousuario.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:WebAPI_tutorial_recursos.Migrations.comentariousuario.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:WebAPI_tutorial_recursos.Migrations.comentariousuario.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
         <member name="T:WebAPI_tutorial_recursos.Models.AuthorBook">
             <summary>
             Navegación n..n
@@ -121,7 +97,7 @@
             </summary>
             <param name="services"></param>
         </member>
-        <member name="M:WebAPI_tutorial_recursos.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILogger{WebAPI_tutorial_recursos.Startup})">
+        <member name="M:WebAPI_tutorial_recursos.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
             <summary>
             Configuración del Middleware
             Middlewares son los métodos "Use..()"
@@ -150,6 +126,18 @@
             <summary>
             Clase: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/27148924#notes
             </summary>
+        </member>
+        <member name="T:WebAPI_tutorial_autores.Migrations.migracion">
+            <inheritdoc />
+        </member>
+        <member name="M:WebAPI_tutorial_autores.Migrations.migracion.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:WebAPI_tutorial_autores.Migrations.migracion.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:WebAPI_tutorial_autores.Migrations.migracion.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
         </member>
     </members>
 </doc>
