@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "Hash": "K/fuFhX+mbtmon5z8Wiq0LTDErOXEX5sPSMZoPXd8ao=",
+  "Source": "WebAPI_tutorial_autores",
+  "BasePath": "_content/WebAPI_tutorial_autores",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "WebAPI_tutorial_autores\\wwwroot",
+      "Source": "WebAPI_tutorial_autores",
+      "ContentRoot": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_autores\\wwwroot\\",
+      "BasePath": "_content/WebAPI_tutorial_autores",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_autores\\wwwroot\\Archivo 1.txt",
+      "SourceId": "WebAPI_tutorial_autores",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_autores\\wwwroot\\",
+      "BasePath": "_content/WebAPI_tutorial_autores",
+      "RelativePath": "Archivo 1.txt",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Archivo 1.txt"
+    }
+  ]
+}

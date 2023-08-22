@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\WebAPI_tutorial_autores.props" />
+</Project>

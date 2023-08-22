@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_autores\\wwwroot\\Archivo 1.txt",
+      "PackagePath": "staticwebassets\\Archivo 1.txt"
+    },
+    {
+      "Id": "obj\\Release\\net6.0-windows10.0.22621.0\\win-x64\\staticwebassets\\msbuild.WebAPI_tutorial_autores.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Release\\net6.0-windows10.0.22621.0\\win-x64\\staticwebassets\\msbuild.build.WebAPI_tutorial_autores.props",
+      "PackagePath": "build\\WebAPI_tutorial_autores.props"
+    },
+    {
+      "Id": "obj\\Release\\net6.0-windows10.0.22621.0\\win-x64\\staticwebassets\\msbuild.buildMultiTargeting.WebAPI_tutorial_autores.props",
+      "PackagePath": "buildMultiTargeting\\WebAPI_tutorial_autores.props"
+    },
+    {
+      "Id": "obj\\Release\\net6.0-windows10.0.22621.0\\win-x64\\staticwebassets\\msbuild.buildTransitive.WebAPI_tutorial_autores.props",
+      "PackagePath": "buildTransitive\\WebAPI_tutorial_autores.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
