@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Linq;
 using WebAPI_tutorial_recursos.Context;
 using WebAPI_tutorial_recursos.Repository.Interfaces;
 using WebAPI_tutorial_recursos.Utilities;

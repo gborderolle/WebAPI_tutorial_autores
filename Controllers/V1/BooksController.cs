@@ -25,10 +25,10 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
 
         public BooksController(ILogger<BooksController> logger, IMapper mapper, IBookRepository bookRepository, IAuthorRepository authorRepository)
         {
+            _response = new();
             _logger = logger;
             _mapper = mapper;
             _bookRepository = bookRepository;
-            _response = new();
             _authorRepository = authorRepository;
         }
 
@@ -129,18 +129,18 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
                     _response.ErrorMessages = new List<string> { $"No se puede crear un libro sin autores." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
-                    ModelState.AddModelError("NotExists", "No se puede crear un libro sin autores.\");.");
+                    ModelState.AddModelError("NotExists", "No se puede crear un libro sin autores.");
                     return BadRequest(ModelState);
                 }
 
                 var authorsList = await _authorRepository.GetAll(v => bookCreateDTO.AuthorsIds.Contains(v.Id));
                 if (authorsList.Count != bookCreateDTO.AuthorsIds.Count)
                 {
-                    _logger.LogError("No existe uno de los autores enviados.");
-                    _response.ErrorMessages = new List<string> { $"No existe uno de los autores enviados." };
+                    _logger.LogError("No existe uno de los autores recibidos.");
+                    _response.ErrorMessages = new List<string> { $"No existe uno de los autores recibidos." };
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
-                    ModelState.AddModelError("NotExists", "No existe uno de los autores enviados.");
+                    ModelState.AddModelError("NotExists", "No existe uno de los autores recibidos.");
                     return BadRequest(ModelState);
                 }
 

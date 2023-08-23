@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 using WebAPI_tutorial_recursos.Models;
 
 namespace WebAPI_tutorial_recursos.Context

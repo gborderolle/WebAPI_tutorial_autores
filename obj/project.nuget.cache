@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EX9u04Vqg2UBHxuLvQmzVLfbL6oeeJBjvJcS+9q1RM59ftxBuxjoupQpD5v0sYLxggOvbckUOU4scdwmHqYeBg==",
+  "dgSpecHash": "4J/wfdcgJkuyUra46TWXaFJd2ZjZW0nJlgXs6aqyZ1gSP/RcOkl2wmARpnlvOhaZLBnRKZnASpyRVUsc8obrnw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_autores\\WebAPI_tutorial_autores.csproj",
+  "projectFilePath": "D:\\Documents\\GitHub\\WebAPI_tutorial_autores\\WebAPI_tutorial_autores\\WebAPI_tutorial_autores.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Gonzalo\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Gonzalo\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
@@ -119,7 +119,7 @@
     "C:\\Users\\Gonzalo\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
     "C:\\Users\\Gonzalo\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\Gonzalo\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512",
-    "C:\\Users\\Gonzalo\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.22621.28\\microsoft.windows.sdk.net.ref.10.0.22621.28.nupkg.sha512"
+    "C:\\Users\\Gonzalo\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.22621.29\\microsoft.windows.sdk.net.ref.10.0.22621.29.nupkg.sha512"
   ],
   "logs": []
 }

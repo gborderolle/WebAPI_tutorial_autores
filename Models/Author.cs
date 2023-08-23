@@ -18,7 +18,7 @@ namespace WebAPI_tutorial_recursos.Models
 
         public DateTime Update { get; set; } = DateTime.Now;
 
-        public List<AuthorBook> AuthorsBooks { get; set; } // n..n
+        public List<AuthorBook> AuthorBookList { get; set; } // n..n
 
     }
 }

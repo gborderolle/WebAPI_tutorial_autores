@@ -104,7 +104,7 @@ namespace WebAPI_tutorial_recursos.Controllers.V1
 
                 var thenIncludeConfig = new ThenIncludePropertyConfiguration<Author>
                 {
-                    IncludeExpression = b => b.AuthorsBooks,
+                    IncludeExpression = b => b.AuthorBookList,
                     ThenIncludeExpression = ab => ((AuthorBook)ab).Book
                 };
 

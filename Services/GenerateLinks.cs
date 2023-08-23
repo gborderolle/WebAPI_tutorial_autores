@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using System;
 using WebAPI_tutorial_recursos.DTOs;
 using WebAPI_tutorial_recursos.Utilities.HATEOAS;
 

@@ -10,9 +10,5 @@ namespace WebAPI_tutorial_recursos.DTOs
         [FirstCharCapitalValidation]
         public string Name { get; set; }
 
-        public DateTime Creation { get; set; }
-
-        public DateTime Update { get; set; }
-
     }
 }

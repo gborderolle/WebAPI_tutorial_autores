@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "K/fuFhX+mbtmon5z8Wiq0LTDErOXEX5sPSMZoPXd8ao=",
+  "Hash": "F4Wzo8lzKh6kyY3l2y55nsyDFYd3qUyyENYLNRmQWPk=",
   "Source": "WebAPI_tutorial_autores",
   "BasePath": "_content/WebAPI_tutorial_autores",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "WebAPI_tutorial_autores\\wwwroot",
       "Source": "WebAPI_tutorial_autores",
-      "ContentRoot": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_autores\\wwwroot\\",
+      "ContentRoot": "D:\\Documents\\GitHub\\WebAPI_tutorial_autores\\WebAPI_tutorial_autores\\wwwroot\\",
       "BasePath": "_content/WebAPI_tutorial_autores",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_autores\\wwwroot\\Archivo 1.txt",
+      "Identity": "D:\\Documents\\GitHub\\WebAPI_tutorial_autores\\WebAPI_tutorial_autores\\wwwroot\\Archivo 1.txt",
       "SourceId": "WebAPI_tutorial_autores",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Gonzalo\\Documents\\GitHub\\WebAPI_tutorial_autores\\wwwroot\\",
+      "ContentRoot": "D:\\Documents\\GitHub\\WebAPI_tutorial_autores\\WebAPI_tutorial_autores\\wwwroot\\",
       "BasePath": "_content/WebAPI_tutorial_autores",
       "RelativePath": "Archivo 1.txt",
       "AssetKind": "All",

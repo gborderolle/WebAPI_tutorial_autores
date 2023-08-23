@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Runtime;
 
 namespace WebAPI_tutorial_recursos.Models
 {

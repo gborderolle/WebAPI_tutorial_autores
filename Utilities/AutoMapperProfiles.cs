@@ -35,11 +35,11 @@ namespace WebAPI_tutorial_recursos.Utilities
         private List<BookDTO> MapAuthorDTOBooks(Author author, AuthorDTO authorDTO)
         {
             var result = new List<BookDTO>();
-            if (author.AuthorsBooks == null)
+            if (author.AuthorBookList == null)
             {
                 return result;
             }
-            foreach (var authorBook in author.AuthorsBooks)
+            foreach (var authorBook in author.AuthorBookList)
             {
                 result.Add(new BookDTO()
                 {
