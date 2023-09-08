@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<sitemanifest>
-  <IisApp path="C:\Users\Gonzalo\Documents\GitHub\WebAPI_tutorial_autores\obj\Release\net6.0\win-x86\PubTmp\Out\" />
-  <dbfullsql path="C:\Users\Gonzalo\Documents\GitHub\WebAPI_tutorial_autores\obj\Release\net6.0\win-x86\PubTmp\EFSQLScripts\WebAPI_tutorial_recursos.Context.ContextDB.sql" />
-</sitemanifest>

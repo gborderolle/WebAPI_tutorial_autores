@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\WebAPI_tutorial_autores.props" />
-</Project>
