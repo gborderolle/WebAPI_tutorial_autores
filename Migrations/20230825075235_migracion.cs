@@ -244,11 +244,11 @@ namespace WebAPI_tutorial_autores.Migrations
                 columns: new[] { "Id", "Creation", "Name", "Update" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9863), "Gonzalo", new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9886) },
-                    { 2, new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9888), "Ramiro", new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9889) },
-                    { 3, new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9890), "Daniel", new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9891) },
-                    { 4, new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9892), "Gastón", new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9892) },
-                    { 5, new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9893), "Martín", new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9894) }
+                    { 1, new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9518), "Gonzalo", new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9533) },
+                    { 2, new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9535), "Ramiro", new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9535) },
+                    { 3, new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9536), "Daniel", new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9537) },
+                    { 4, new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9537), "Gastón", new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9538) },
+                    { 5, new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9539), "Martín", new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9539) }
                 });
 
             migrationBuilder.InsertData(
@@ -256,8 +256,8 @@ namespace WebAPI_tutorial_autores.Migrations
                 columns: new[] { "Id", "Creation", "Title", "Update" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(151), "El libro de la selva", new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(152) },
-                    { 2, new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(153), "La vida de Steve Jobs", new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(154) }
+                    { 1, new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9775), "El libro de la selva", new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9776) },
+                    { 2, new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9777), "La vida de Steve Jobs", new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9777) }
                 });
 
             migrationBuilder.CreateIndex(

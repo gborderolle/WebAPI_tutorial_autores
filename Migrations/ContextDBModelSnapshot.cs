@@ -247,37 +247,37 @@ namespace WebAPI_tutorial_autores.Migrations
                         new
                         {
                             Id = 1,
-                            Creation = new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9863),
+                            Creation = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9518),
                             Name = "Gonzalo",
-                            Update = new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9886)
+                            Update = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9533)
                         },
                         new
                         {
                             Id = 2,
-                            Creation = new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9888),
+                            Creation = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9535),
                             Name = "Ramiro",
-                            Update = new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9889)
+                            Update = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9535)
                         },
                         new
                         {
                             Id = 3,
-                            Creation = new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9890),
+                            Creation = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9536),
                             Name = "Daniel",
-                            Update = new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9891)
+                            Update = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9537)
                         },
                         new
                         {
                             Id = 4,
-                            Creation = new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9892),
+                            Creation = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9537),
                             Name = "Gastón",
-                            Update = new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9892)
+                            Update = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9538)
                         },
                         new
                         {
                             Id = 5,
-                            Creation = new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9893),
+                            Creation = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9539),
                             Name = "Martín",
-                            Update = new DateTime(2023, 8, 22, 1, 59, 5, 836, DateTimeKind.Local).AddTicks(9894)
+                            Update = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9539)
                         });
                 });
 
@@ -326,16 +326,16 @@ namespace WebAPI_tutorial_autores.Migrations
                         new
                         {
                             Id = 1,
-                            Creation = new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(151),
+                            Creation = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9775),
                             Title = "El libro de la selva",
-                            Update = new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(152)
+                            Update = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9776)
                         },
                         new
                         {
                             Id = 2,
-                            Creation = new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(153),
+                            Creation = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9777),
                             Title = "La vida de Steve Jobs",
-                            Update = new DateTime(2023, 8, 22, 1, 59, 5, 837, DateTimeKind.Local).AddTicks(154)
+                            Update = new DateTime(2023, 8, 25, 4, 52, 34, 947, DateTimeKind.Local).AddTicks(9777)
                         });
                 });
 
@@ -419,7 +419,7 @@ namespace WebAPI_tutorial_autores.Migrations
             modelBuilder.Entity("WebAPI_tutorial_recursos.Models.AuthorBook", b =>
                 {
                     b.HasOne("WebAPI_tutorial_recursos.Models.Author", "Author")
-                        .WithMany("AuthorsBooks")
+                        .WithMany("AuthorBookList")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -454,7 +454,7 @@ namespace WebAPI_tutorial_autores.Migrations
 
             modelBuilder.Entity("WebAPI_tutorial_recursos.Models.Author", b =>
                 {
-                    b.Navigation("AuthorsBooks");
+                    b.Navigation("AuthorBookList");
                 });
 
             modelBuilder.Entity("WebAPI_tutorial_recursos.Models.Book", b =>
