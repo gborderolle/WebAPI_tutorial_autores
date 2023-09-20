@@ -15,6 +15,9 @@ Usar los 2 appsettings.json:
 - Development
 - Production
 
+
+URL publicada: http://gborderolle1-001-site1.atempurl.com/swagger/index.html
+
 // -------------------
 
 Analizar tokens con claims:
